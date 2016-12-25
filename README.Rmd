@@ -1,0 +1,38 @@
+---
+output: md_document
+---
+
+
+# dmutate
+Mutate a `data.frame`, adding random variates.
+
+```{r, message=FALSE}
+library(dplyr)
+library(dmutate)
+```
+
+```{r, message=FALSE}
+low_wt <- 70
+high_wt <- 90
+```
+
+
+```{r, message=FALSE}
+mu <- 80
+p.female <- 0.24
+```
+
+
+```{r, message=FALSE}
+data.frame(ID=1:20) %>%
+  mutate(GROUP = ID%%2) %>%
+  dmutate(WT[low_wt,high_wt] ~ rnorm(mu,1)) %>%
+  dmutate(STUDY_RE ~ rnorm(0,sqrt(50)|GROUP)) %>%
+  dmutate(SEX ~ dmutate:::Bin(p.female)) %>%
+  dmutate(sigma ~ rgamma(1,1)) %>%
+  dmutate(kappa ~ rgamma(1,1|GROUP))
+
+```
+
+
+

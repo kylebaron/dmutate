@@ -56,6 +56,44 @@ dmutate <- function(data,form,tries=10) {
   }
 }
 
+##' @export
+dmutate2 <- function(data,form,tries=10,...) {
+
+  args <- list(...)
+  if(is.language(form)) form <- deparse(form)
+  has.cond <- is.character(args$by)
+
+  form <- parse_form2(form)
+
+  if(has.cond) {
+    skele <- data %>% dplyr::distinct_(.dots=args$by)
+    n <- nrow(skele)
+
+  } else {
+    n <- nrow(data)
+  }
+
+
+  mn <- eval(parse(text=form$var$lower))
+  mx <- eval(parse(text=form$var$upper))
+  y <- bound2(form$dist,n=n,mn=mn,mx=mx,tries=tries,args=args)
+  r <- data_frame(y=y)
+
+  names(r) <- form$var$vars
+  data <- data %>% select_(.dots=setdiff(names(data),names(r)))
+
+  if(has.cond) {
+    r <- bind_cols(skele,r)
+    return(left_join(data,r,by=args$by))
+  } else {
+    return(bind_cols(data,r))
+  }
+}
+
+
+
+
+
 
 parse_right <- function(x) {
   bar <- where_is("|",x)
@@ -131,5 +169,57 @@ bound <- function(texpr,n,e=.GlobalEnv,mult=1.2,mn=-Inf,mx=Inf,tries=10) {
   return(y[1:n0])
 }
 
+##' @export
+bound2 <- function(fun,n,args,e=.GlobalEnv,mult=1.2,mn=-Inf,mx=Inf,tries=10) {
+
+  n0 <- n
+  n <- n*mult
+  ngot <- 0
+  y <- numeric(0)
+  args$n <- n
+  mn <- eval(parse(text=mn),envir=e)
+  mx <- eval(parse(text=mx),envir=e)
+  for(i in seq(1,tries)) {
+    yy <- do.call(fun,args)
+    yy <- yy[yy > mn & yy < mx]
+    ngot <- ngot + length(yy)
+    y <- c(yy,y)
+    if(ngot > n0) break
+  }
+  return(y[1:n0])
+}
+
+
+
 Bin <- function(...) rbinom(size=1,...)
+binomial <- function(n,p) {
+  rbinom(n,1,p)
+}
+
+normal <- function(n,mean,sd,...) {
+  rnorm(n,mean,sd)
+}
+
+
+
+parse_form2 <- function(x) {
+  x <- gsub(" ", "",x, fixed=TRUE)
+  form <- strsplit(x,"~",fixed=TRUE)[[1]]
+  var <- dmutate:::parse_left(form[1])
+  dist <- form[2]
+  list(var=var,dist=dist)
+}
+
+parse2 <- function(x) {
+  x <- gsub(" ", "", x, fixed=TRUE)
+  w <- dmutate:::where_is(',',x)
+  til <- dmutate:::where_is("~",x)[1]
+  w <- w[w > til]
+  form <- substr(x,0,w[1]-1)
+  args <- substr(x,w[1]+1,nchar(x))
+  form <- parse_form2(form)
+  c(list(args=args),form)
+}
+
+
 

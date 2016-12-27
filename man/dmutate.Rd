@@ -4,7 +4,7 @@
 \alias{dmutate}
 \title{Add random variates to your data frame.}
 \usage{
-dmutate(data, form)
+dmutate(data, form, tries = 10)
 }
 \arguments{
 \item{data}{the data.frame to mutate}

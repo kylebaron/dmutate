@@ -152,11 +152,7 @@ expand.ev <- function(...) {
   shuffle(ans,"ID")
 }
 
-
 is.numeric.data.frame <- function(x) sapply(x, is.numeric)
-
-
-
 
 tolist <- function(x,concat=TRUE,envir=list()) {
   if(is.null(x)) return(list())
@@ -313,11 +309,6 @@ null_list <- setNames(list(), character(0))
 single.number <- function(x) length(x)==1 & is.numeric(x)
 
 
-# 15 sept 2016
-installed_models <- function() {
-  file.path(system.file(package="mrgsolve"), "inst", "models")
-}
-
 get_option <- function(what,opt,default=FALSE) {
   if(is.element(what,names(opt))) {
     opt[[what]]
@@ -352,12 +343,10 @@ file_readable <- function(x) {
 }
 
 
-mrgnorm <- function(n,sigma) {
-  ncols <- ncol(sigma)
-  matrix(rnorm(n * ncols), ncol = ncols) %*% chol(sigma)
-}
-
 where_is <- function(what,x) {
   as.integer(unlist(gregexpr(what,x,fixed=TRUE)))
+}
+where_first <- function(what,x) {
+  as.integer(unlist(regexpr(what,x,fixed=TRUE)))
 }
 

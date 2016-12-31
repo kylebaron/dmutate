@@ -43,14 +43,6 @@ merge.list <- function(x,y,...,open=FALSE,
 
 
 
-pfile <- function(package,dir,file,ext=NULL) {
-  ans <- file.path(path.package(package),dir,file)
-  if(is.character(ext)) {
-    ans <- paste0(ans, ".", ext)
-  }
-  return(ans)
-}
-
 cropstr <- function(string, prefix, suffix, bump= "...") {
   nc <- nchar(string)
   total <- prefix+suffix
@@ -118,38 +110,6 @@ as.cvec <- function(x) {
   if(is.null(x)) return(character(0))
   x <- gsub("^\\s+|\\s+$", "", x, perl=TRUE)
   unlist(strsplit(as.character(x),"\\s*(\n|,|\\s+)\\s*",perl=TRUE))
-}
-
-
-##' Create template data sets for simulation.
-##'
-##' @param ... passed to \code{\link{expand.grid}}
-##' @export
-##' @details
-##' An ID column is added as \code{1:nrow(ans)} if not supplied by the user.
-##' For \code{expand.ev}, defaults
-##' also added: \code{cmt = 1}, \code{time = 0}, \code{evid = 1}.
-##'
-##' @examples
-##' idata <- expand.idata(CL=c(1,2,3), VC=c(10,20,30))
-##'
-##' doses <- expand.ev(amt=c(300,100), ii=c(12,24), cmt=1)
-##'
-expand.idata <- function(...) {
-  ans <- expand.grid(...,stringsAsFactors=FALSE)
-  ans$ID <- 1:nrow(ans)
-  shuffle(ans,"ID")
-}
-
-##' @export
-##' @rdname expand.idata
-expand.ev <- function(...) {
-  ans <- expand.grid(...,stringsAsFactors=FALSE)
-  ans$ID <- 1:nrow(ans)
-  if(!has_name("evid", ans)) ans$evid <- 1
-  if(!has_name("cmt", ans)) ans$cmt <- 1
-  if(!has_name("time", ans)) ans$time <- 0
-  shuffle(ans,"ID")
 }
 
 is.numeric.data.frame <- function(x) sapply(x, is.numeric)

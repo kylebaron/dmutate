@@ -1,20 +1,14 @@
-##'
-##'
-##' @importFrom dplyr left_join
-##' @importFrom MASS mvrnorm
-##'
-NULL
 
 
-
-##' Add random variates to your data frame.
+##' Add random variates to a data frame.
 ##'
 ##' @param data the data.frame to mutate
-##' @param x an unquoted R formula; see details.
+##' @param form an unquoted R formula; see details.
+##' @param ... additional inputs
 ##'
 ##' @export
-##'
-##'
+##' @importFrom dplyr left_join
+##' @importFrom MASS mvrnorm
 ##' @examples
 ##'
 ##'
@@ -25,90 +19,25 @@ NULL
 ##' Sigma <- diag(c(1,1))
 ##'
 ##' Theoph %>% dmutate(CL+VC ~ MvLN(mu,Sigma|ID)) %>% head
-##'
-##'
 dmutate <- function(data,form,...) {
   if(is.language(form)) form <- deparse(form)
-  object <- parse_form(form)
-  do_mutate(data,object,...)
+  form <- parse_form_3(form)
+  do_mutate(data,x=form,...)
 }
 
+
 ##' @export
-dmutate_ <- function(data,string,envir=.GlobalEnv,...) {
-  form <- parse_random_string(string)
-  args <- paste0("list(",form$args,")")
-  args <- eval(parse(text=args),envir=envir)
-  args <- c(args,list(...),list(data=data,object=form,envir=envir))
+dmutate_ <- function(data,x,...) {
+  x <- parse_random_string(x)
+  args <- x$args
+  x$args <- NULL
+  args <- c(args,list(x=x,data=data),list(...))
   do.call(do_mutate,args)
 }
 
-##' @export
-do_mutate <- function(data,object,tries=10,envir=.GlobalEnv,...) {
-  args <- list(...)
-
-  args$by <- unique(c(args$by,object$by.bar))
-
-  has.cond <- is.character(args$by)
-
-  if(has.cond) {
-    skele <- data %>% dplyr::distinct_(.dots=args$by)
-    n <- nrow(skele)
-
-  } else {
-    n <- nrow(data)
-  }
-
-  mn <- eval(parse(text=object$lower))
-  mx <- eval(parse(text=object$upper))
-  y <- bound(object$dist,n=n,mn=mn,mx=mx,tries=tries,args=args)
-  r <- data_frame(y=y)
-
-  names(r) <- object$vars
-  data <- data %>% select_(.dots=setdiff(names(data),names(r)))
-
-  if(has.cond) {
-    r <- bind_cols(skele,r)
-    return(left_join(data,r,by=args$by))
-  } else {
-    return(bind_cols(data,r))
-  }
-
-}
-
-
-
-# dmutate <- function(data,form,tries=10) {
-#
-#   if(is.language(form)) form <- deparse(form)
-#
-#   form <- parse_form(form)
-#
-#   if(form$right$has.cond) {
-#     skele <- data %>% dplyr::distinct_(.dots=form$right$cond)
-#     n <- nrow(skele)
-#
-#   } else {
-#     n <- nrow(data)
-#   }
-#
-#
-#   mn <- eval(parse(text=form$left$lower))
-#   mx <- eval(parse(text=form$left$upper))
-#   y <- bound(form$right$call,n=n,mn=mn,mx=mx,tries=tries)
-#   r <- data_frame(y=y)
-#   names(r) <- form$left$vars
-#
-#   if(form$right$has.cond) {
-#     r <- bind_cols(skele,r)
-#     return(left_join(data,r,by=form$right$cond))
-#   } else {
-#     return(bind_cols(data,r))
-#   }
-# }
-
 
 parse_right <- function(x) {
-  bar <- where_is("|",x)
+  bar <- where_first("|",x)
   op <- where_is("(",x)
   cl <- where_is(")",x)
   if(sum(op>0) != sum(cl>0)) {
@@ -153,45 +82,17 @@ parse_left <- function(x) {
   list(vars=vars,lower=lower,upper=upper,n=length(vars))
 }
 
-# parse_form <- function(x) {
-#   x <- gsub(" ", "",x,fixed=TRUE)
-#   # Split formula on tilde
-#   til <- strsplit(x=x,"~")[[1]]
-#   left <- til[1]
-#   right <- til[2]
-#   list(left=parse_left(left),right=parse_right(right))
-# }
-
-
-# bound <- function(texpr,n,e=.GlobalEnv,mult=1.2,mn=-Inf,mx=Inf,tries=10) {
-#   expr <- parse(text=texpr)
-#   n0 <- n
-#   n <- n*mult
-#   ngot <- 0
-#   y <- numeric(0)
-#   e$internal <- list(N=n)
-#   for(i in seq(1,tries)) {
-#     yy <- eval(expr,envir=e)
-#     yy <- yy[yy > mn & yy < mx]
-#     ngot <- ngot + length(yy)
-#     y <- c(yy,y)
-#     if(ngot > n0) break
-#   }
-#   return(y[1:n0])
-# }
 
 ##' @export
-bound <- function(fun,n,args,e=.GlobalEnv,mult=1.2,mn=-Inf,mx=Inf,tries=10) {
+bound <- function(call,n,envir=list(),mult=1.2,mn=-Inf,mx=Inf,tries=10) {
 
   n0 <- n
   n <- n*mult
   ngot <- 0
   y <- numeric(0)
-  args$n <- n
-  mn <- eval(parse(text=mn),envir=e)
-  mx <- eval(parse(text=mx),envir=e)
+  envir$.n <- n
   for(i in seq(1,tries)) {
-    yy <- do.call(fun,args)
+    yy <- eval(call,envir=envir)
     yy <- yy[yy > mn & yy < mx]
     ngot <- ngot + length(yy)
     y <- c(yy,y)
@@ -200,27 +101,16 @@ bound <- function(fun,n,args,e=.GlobalEnv,mult=1.2,mn=-Inf,mx=Inf,tries=10) {
   return(y[1:n0])
 }
 
-binomial <- function(n,p,...) {
-  rbinom(n,1,p)
-}
+
+
+binomial <- function(n,p,...) rbinom(n,1,p)
 Bin <- function(...) binomial
 bernoulli <- binomial
-normal <- function(n,mean,sd,...) {
-  rnorm(n,mean,sd)
-}
-gamma <- function(n,shape,rate,...) {
-  rgamma(n,shape,rate)
-}
-beta <- function(n,shape1,shape2,ncp=0,...) {
-  rbeta(n,shape1,shape2,ncp)
-}
-uniform <- function(n,min,max,...) {
-  runif(n,min,max)
-}
-lognormal <- function(n,mean,sd,...) {
-  exp(rnorm(n,mean,sd))
-}
-
+normal <- function(n,mean,sd,...) rnorm(n,mean,sd)
+gamma <- function(n,shape,rate,...) rgamma(n,shape,rate)
+beta <- function(n,shape1,shape2,ncp=0,...) rbeta(n,shape1,shape2,ncp)
+uniform <- function(n,min,max,...) runif(n,min,max)
+lognormal <- function(n,mean,sd,...) exp(rnorm(n,mean,sd))
 
 parse_form <- function(x) {
   x <- gsub(" ", "",x, fixed=TRUE)
@@ -238,25 +128,172 @@ parse_form <- function(x) {
     dist <- form[2]
     by <- character(0)
   }
-  c(list(dist=dist,by.bar = by),var)
+  c(list(dist=dist,by=by),var)
 }
 
-parse_random_string <- function(x) {
-  x <- gsub(" ", "", x, fixed=TRUE)
-  w <- where_is(',',x)
-  til <- where_is("~",x)[1]
-  w <- w[w > til]
-  form <- substr(x,0,w[1]-1)
-  args <- substr(x,w[1]+1,nchar(x))
-  c(list(args=args),parse_form(form))
+peval <- function(x,envir=list()) {
+  eval(parse(text=x),envir=envir)
 }
+
+
+
+
 
 parse_random_block <- function(x) {
   x <- unlist(strsplit(x, "\n",x,fixed=TRUE),use.names=FALSE)
   x <- x[x!=""]
-  x <- lapply(x,dmutate:::parse_random_string)
+  x <- lapply(x,parse_random_string)
   x
 }
 
+##' @export
+dmutate_list <- function(data,block,...) {
 
+  x <- parse_random_block(block)
+
+  for(i in seq_along(x)) {
+    data <- do_mutate(data,x[[i]],...)
+  }
+  return(data)
+}
+
+first_comma <- function(x,start=1) {
+  open <- 0
+  where <- NULL
+  for(i in start:nchar(x)) {
+    a <- substr(x,i,i)
+    if(a=="(")  {
+      open <- open+1
+      next
+    }
+    if(a==")") {
+      open <- open-1
+      next
+    }
+    if(a=="," & open==0) return(i)
+  }
+  return(-1)
+}
+
+rm_space <- function(x) gsub(" ", "",x,fixed=TRUE)
+
+
+parse_random_string <- function(string) {
+  string <- rm_space(string)
+  til <- where_first("~",string)
+  a <- first_comma(string,til+1)
+  if(a > 0) {
+    args <- substr(string,a+1,nchar(string))
+    args <- peval(paste0("list(",args,")"))
+    form <- substr(string,0,a-1)
+  } else {
+    args <- list()
+    form <- string
+  }
+  form <- parse_form_3(form)
+  c(form,list(args=args))
+}
+
+
+parse_3 <- function(x) {
+
+  x <- rm_space(x)
+
+  til <- where_first("~",x)
+  bar <- where_first("|",x)
+  left <- substr(x,0,til-1)
+  a <- first_comma(x,start=til+1)
+  group.end <- ifelse(a > 0, a-1, nchar(x))
+  right.end <- ifelse(a > 0, a-1, nchar(x))
+
+  if(bar > 0) {
+    right <- substr(x,til+1,bar-1)
+    group <- substr(x,bar+1,group.end)
+  } else {
+    if(a > 0) {
+      right <- substr(x,til+1,a-1)
+    } else {
+      right <- substr(x,til+1,nchar(x))
+    }
+    group <- ""
+  }
+
+  if(a > 0) {
+    opts <- substr(x,a+1,nchar(x))
+  } else {
+    opts <-""
+  }
+
+  right <- sub("(", "(.n,",right,fixed=TRUE)
+  right <- parse(text=right)
+  left <- parse_left(left)
+  opts <- eval(parse(text=paste0("list(",opts,")")))
+  c(left,list(call=right,by=group,opts=opts))
+}
+
+
+parse_form_3 <- function(x) {
+
+  x <- rm_space(x)
+
+  til <- where_first("~",x)
+  bar <- where_first("|",x)
+  left <- substr(x,0,til-1)
+
+
+  if(bar > 0) {
+    right <- substr(x,til+1,bar-1)
+    group <- substr(x,bar+1,nchar(x))
+  } else {
+    right <- substr(x,til+1,nchar(x))
+    group <- ""
+  }
+
+  right <- sub("(", "(.n,",right,fixed=TRUE)
+  right <- parse(text=right)
+  left <- parse_left(left)
+  c(left,list(call=right,by=group))
+}
+
+
+
+
+
+##' @export
+do_mutate <- function(data,x,envir=list(),tries=10,mult=1.5,...) {
+
+  if(tries <=0) stop("tries must be >= 1")
+
+  x$by <- c(x$by,x$opts$by)
+  x$by <- x$by[x$by != ""]
+
+  has.by <- any(nchar(x$by) > 0)
+
+  if(has.by) {
+    skele <- dplyr::distinct_(data,.dots=x$by)
+    n <- nrow(skele)
+  } else {
+    n <- nrow(data)
+  }
+
+  mn <- eval(parse(text=x$lower),envir=envir)
+  mx <- eval(parse(text=x$upper),envir=envir)
+  r <- data_frame(.x=bound(x$call,n=n,mn=mn, mx=mx,tries=tries,e=envir))
+  names(r) <- x$vars
+  data <- data %>% select_(.dots=setdiff(names(data),names(r)))
+
+  if(has.by) {
+    r <- bind_cols(skele,r)
+    return(left_join(data,r,by=x$by))
+  } else {
+    return(bind_cols(data,r))
+  }
+
+}
+
+
+
+call_mutate <- function(data,.dota) {
+  return(mutate_(data,.dots=x))
+}
 

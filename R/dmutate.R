@@ -3,37 +3,42 @@
 ##' Add random variates to a data frame.
 ##'
 ##' @param data the data.frame to mutate
-##' @param form an unquoted R formula; see details.
+##' @param input an unquoted R formula; see details.
 ##' @param ... additional inputs
 ##'
 ##' @export
-##' @importFrom dplyr left_join
-##' @importFrom MASS mvrnorm
-##' @examples
-##'
-##'
-##' data(Theoph)
-##'
-##' Theoph %>% dmutate(SEX~binom(0.3|ID)) %>% head
-##' mu <- c(1,30)
-##' Sigma <- diag(c(1,1))
-##'
-##' Theoph %>% dmutate(CL+VC ~ MvLN(mu,Sigma|ID)) %>% head
-dmutate <- function(data,form,...) {
-  if(is.language(form)) form <- deparse(form)
-  form <- parse_form_3(form)
-  do_mutate(data,x=form,...)
-}
+##' @importFrom dplyr left_join bind_cols data_frame select_
+##' @importFrom stats rbinom setNames
+##' @importFrom utils type.convert
+##' @importFrom methods setGeneric
+setGeneric("mutate_random", function(data,input,...) standardGeneric("mutate_random"))
 
 
 ##' @export
-dmutate_ <- function(data,x,...) {
-  x <- parse_random_string(x)
-  args <- x$args
-  x$args <- NULL
-  args <- c(args,list(x=x,data=data),list(...))
+##' @rdname mutate_random
+##'
+setMethod("mutate_random", c("data.frame","formula"), function(data,input,...) {
+  if(is.language(input)) input <- deparse(input)
+  input <- parse_form_3(input)
+  do_mutate(data,x=input,...)
+})
+
+
+##' @export
+##' @rdname mutate_random
+setMethod("mutate_random", c("data.frame", "character"), function(data,input,...) {
+  input <- parse_random_string(input)
+  args <- input$args
+  input$args <- NULL
+  args <- c(args,list(x=input,data=data),list(...))
   do.call(do_mutate,args)
-}
+})
+
+##' @export
+##' @rdname mutate_random
+setMethod("mutate_random", c("data.frame", "list"), function(data,input,...) {
+  apply_covset(data,input)
+})
 
 
 parse_right <- function(x) {
@@ -83,7 +88,6 @@ parse_left <- function(x) {
 }
 
 
-##' @export
 bound <- function(call,n,envir=list(),mult=1.2,mn=-Inf,mx=Inf,tries=10) {
 
   n0 <- n
@@ -101,16 +105,7 @@ bound <- function(call,n,envir=list(),mult=1.2,mn=-Inf,mx=Inf,tries=10) {
   return(y[1:n0])
 }
 
-
-
-binomial <- function(n,p,...) rbinom(n,1,p)
-Bin <- function(...) binomial
-bernoulli <- binomial
-normal <- function(n,mean,sd,...) rnorm(n,mean,sd)
-gamma <- function(n,shape,rate,...) rgamma(n,shape,rate)
-beta <- function(n,shape1,shape2,ncp=0,...) rbeta(n,shape1,shape2,ncp)
-uniform <- function(n,min,max,...) runif(n,min,max)
-lognormal <- function(n,mean,sd,...) exp(rnorm(n,mean,sd))
+rbinomial <- function(n,p,...) rbinom(n,1,p)
 
 parse_form <- function(x) {
   x <- gsub(" ", "",x, fixed=TRUE)
@@ -135,10 +130,6 @@ peval <- function(x,envir=list()) {
   eval(parse(text=x),envir=envir)
 }
 
-
-
-
-
 parse_random_block <- function(x) {
   x <- unlist(strsplit(x, "\n",x,fixed=TRUE),use.names=FALSE)
   x <- x[x!=""]
@@ -146,8 +137,7 @@ parse_random_block <- function(x) {
   x
 }
 
-##' @export
-dmutate_list <- function(data,block,...) {
+mutate_random_list <- function(data,block,...) {
 
   x <- parse_random_block(block)
 
@@ -176,7 +166,6 @@ first_comma <- function(x,start=1) {
 }
 
 rm_space <- function(x) gsub(" ", "",x,fixed=TRUE)
-
 
 parse_random_string <- function(string) {
   string <- rm_space(string)
@@ -256,10 +245,6 @@ parse_form_3 <- function(x) {
 }
 
 
-
-
-
-##' @export
 do_mutate <- function(data,x,envir=list(),tries=10,mult=1.5,...) {
 
   if(tries <=0) stop("tries must be >= 1")
@@ -278,9 +263,9 @@ do_mutate <- function(data,x,envir=list(),tries=10,mult=1.5,...) {
 
   mn <- eval(parse(text=x$lower),envir=envir)
   mx <- eval(parse(text=x$upper),envir=envir)
-  r <- data_frame(.x=bound(x$call,n=n,mn=mn, mx=mx,tries=tries,e=envir))
+  r <- data_frame(.x=bound(x$call,n=n,mn=mn, mx=mx,tries=tries,envir=envir))
   names(r) <- x$vars
-  data <- data %>% select_(.dots=setdiff(names(data),names(r)))
+  data <- select_(data,.dots=setdiff(names(data),names(r)))
 
   if(has.by) {
     r <- bind_cols(skele,r)
@@ -292,8 +277,26 @@ do_mutate <- function(data,x,envir=list(),tries=10,mult=1.5,...) {
 }
 
 
-
-call_mutate <- function(data,.dota) {
-  return(mutate_(data,.dots=x))
+##' Create a set of covariates.
+##' @param ... formulae to use for the covset
+##' @export
+##'
+covset <- function(...) {
+  x <- list(...)
+  y <- as.character(match.call(expand.dots=TRUE))[-1]
+  lang <- sapply(x,is.language)
+  x[lang] <- lapply(x[lang],deparse)
+  x <- lapply(x,as.character)
+  return(setNames(x,y))
 }
+
+apply_covset <- function(data,.covset) {
+  for(i in seq_along(.covset)) {
+    data <- mutate_random(data,.covset[[i]])
+  }
+  return(data)
+}
+
+
+
 

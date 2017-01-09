@@ -1,20 +1,6 @@
 
 is.mt <- function(x) {return(is.null(x) | length(x)==0)}
 
-
-##' Merge two lists
-##'
-##' @param x the original list
-##' @param y the new list for merging
-##' @param wild wild-card name; see details
-##' @param warn issue warning if nothing found to update
-##' @param context description of usage context
-##' @param ... not used
-##' @param open logical indicating whether or not new items should be allowed in the list upon merging.
-##' @rdname merge
-##' @details
-##' Wild-card names (\code{wild}) are always retained in \code{x} and are brought along from \code{y} only when \code{open}.
-##' @export
 merge.list <- function(x,y,...,open=FALSE,
                        warn=TRUE,context="object",wild="...") {
 
@@ -60,10 +46,6 @@ mytrimr <- function(x) {
   gsub("\\s$", "",x,perl=TRUE)
 }
 
-
-
-## Create character vector
-## Split on comma or space
 cvec_cs <- function(x) {
   if(is.null(x) | length(x)==0) return(character(0))
   x <- unlist(strsplit(as.character(x),",",fixed=TRUE),use.names=FALSE)
@@ -138,27 +120,9 @@ tovec <- function(x,concat=TRUE) {
 }
 
 
-##' Create create character vectors.
-##'
-##' @param x comma-separated quoted string (for \code{cvec})
-##' @param ... unquoted strings (for \code{ch})
-##' @export
-##' @examples
-##'
-##' cvec("A,B,C")
-##' ch(A,B,C)
-##' s(A,B,C)
-##'
-
-##' @export
-##' @rdname cvec
 cvec <- function(...) as.cvec(...)
 
-##' @export
-##' @rdname cvec
 ch <- function(...) as.character(match.call(expand.dots=TRUE))[-1]
-##' @export
-##' @rdname cvec
 s <- ch
 
 if.file.remove <- function(x) {
@@ -249,11 +213,6 @@ shuffle <- function (x, who, after = NA)  {
     after <- length(nms)
   nms <- append(nms, who, after = after)
   x[nms]
-}
-
-filename <-  function (dir, run = NULL, ext = NULL,short=FALSE) {
-  if(short) dir <- build_path(dir)
-  file.path(dir, paste0(run, ext))
 }
 
 charcount <- function(x,w,fx=TRUE) {

@@ -2,7 +2,8 @@ Package: dmutate
 Type: Package
 Title: What the Package Does (Title Case)
 Version: 0.0.1
-Imports: dplyr, MASS, methods
+Imports: dplyr
+Depends: methods
 Author: Kyle Baron
 Maintainer: Kyle Baron <devgithub@fastmail.fm>
 Description: Mutate data frames with random variates.

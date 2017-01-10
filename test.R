@@ -1,22 +1,16 @@
 
 library(dplyr)
-data(Theoph)
+
 library(magrittr)
-library(mrgsolve)
 
-l <- list(WT ~ rnorm(50,100)|ID,
-          AGE ~ runif(20,100)|ARM,
-          SEX ~ binomial(0.5))
+age <- AGE ~ rnorm(50,20)
+wt <- WT ~ mutate(AGE*2 - 5)
 
-wt <- WT ~ rnorm(50,10) |ID
-age <- AGE ~ runif(20,180)|ARM
-sex <- SEX ~ rbinomial(0.5)|ID
-a <- covset(wt,age,sex)
-b <- covset(sex)
+a <- covset(age,wt)
 
 data <- data_frame(ID=1:6,ARM = ID%%2)
 
-data %>% mutate_random(age)
-
-data %>% as.tbl %>% mutate_random("AGE ~ runif(20,190)")
+#debug(dmutate:::parse_random_string)
+#debug(dmutate:::do_mutate)
+data %>% mutate_random(a,envir=en)
 

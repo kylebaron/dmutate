@@ -7,7 +7,7 @@
 ##' @param ... additional inputs
 ##'
 ##' @export
-##' @importFrom dplyr left_join bind_cols data_frame select_
+##' @importFrom dplyr left_join bind_cols data_frame select_ mutate_
 ##' @importFrom stats rbinom setNames
 ##' @importFrom utils type.convert
 ##' @importFrom methods setGeneric
@@ -37,7 +37,7 @@ setMethod("mutate_random", c("data.frame", "character"), function(data,input,...
 ##' @export
 ##' @rdname mutate_random
 setMethod("mutate_random", c("data.frame", "list"), function(data,input,...) {
-  apply_covset(data,input)
+  apply_covset(data,input,...)
 })
 
 
@@ -238,14 +238,30 @@ parse_form_3 <- function(x) {
     group <- ""
   }
 
-  right <- sub("(", "(.n,",right,fixed=TRUE)
+  op <- where_first("(",right)
+  dist <- substr(right,0,op-1)
+
+  if(substr(dist,0,1)=="r") {
+    right <- sub("(", "(.n,",right,fixed=TRUE)
+  }
+
   right <- parse(text=right)
   left <- parse_left(left)
-  c(left,list(call=right,by=group))
+  c(left,list(call=right,by=group,dist=dist))
 }
 
 
 do_mutate <- function(data,x,envir=list(),tries=10,mult=1.5,...) {
+
+  if(x$dist == "mutate") {
+    call <- as.character(x$call)
+    call <- gsub("mutate\\((.+)\\)$", "\\1", call)
+    .dots <- paste0("list(~",call,")")
+    .dots <- eval(parse(text=.dots),envir=envir)
+    names(.dots) <- x$vars
+    data <- mutate_(data, .dots=.dots)
+    return(data)
+  }
 
   if(tries <=0) stop("tries must be >= 1")
 
@@ -290,9 +306,9 @@ covset <- function(...) {
   return(setNames(x,y))
 }
 
-apply_covset <- function(data,.covset) {
+apply_covset <- function(data,.covset,...) {
   for(i in seq_along(.covset)) {
-    data <- mutate_random(data,.covset[[i]])
+    data <- mutate_random(data,.covset[[i]],...)
   }
   return(data)
 }

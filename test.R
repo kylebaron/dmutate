@@ -12,5 +12,5 @@ data <- data_frame(ID=1:6,ARM = ID%%2)
 
 #debug(dmutate:::parse_random_string)
 #debug(dmutate:::do_mutate)
-data %>% mutate_random(a,envir=en)
+data %>% mutate_random(a)
 

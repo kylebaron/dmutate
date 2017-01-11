@@ -93,7 +93,7 @@ parse_left <- function(x) {
 }
 
 
-bound <- function(call,n,envir=list(),mult=1.2,mn=-Inf,mx=Inf,tries=10) {
+bound <- function(call,n,envir=list(),mult=1.3,mn=-Inf,mx=Inf,tries=10) {
 
   n0 <- n
   n <- n*mult
@@ -106,6 +106,9 @@ bound <- function(call,n,envir=list(),mult=1.2,mn=-Inf,mx=Inf,tries=10) {
     ngot <- ngot + length(yy)
     y <- c(yy,y)
     if(ngot > n0) break
+  }
+  if(ngot < n0) {
+    stop("Could not simulate required variates within given bounds in ", tries, " tries", call.=FALSE) 
   }
   return(y[1:n0])
 }
@@ -259,9 +262,9 @@ parse_form_3 <- function(x) {
 do_mutate <- function(data,x,envir=list(),tries=10,mult=1.5,...) {
   data <- ungroup(data)
 
-  if(x$dist == "mutate") {
+  if(x$dist == "expr") {
     call <- as.character(x$call)
-    call <- gsub("mutate\\((.+)\\)$", "\\1", call)
+    call <- gsub("expr\\((.+)\\)$", "\\1", call)
     .dots <- paste0("list(~",call,")")
     .dots <- eval(parse(text=.dots),envir=envir)
     names(.dots) <- x$vars
@@ -300,6 +303,7 @@ do_mutate <- function(data,x,envir=list(),tries=10,mult=1.5,...) {
 
 
 ##' Create a set of covariates.
+##' @param x a covset
 ##' @param ... formulae to use for the covset
 ##' @export
 ##'
@@ -323,8 +327,16 @@ covset <- function(...) {
 is.covset <- function(x) return(inherits(x,"covset"))
 
 ##' @export
-as.list.covset <- function(x) {
+##' @rdname covset
+setMethod("as.list", "covset", function(x,...) {
   structure(x,class=NULL)
+})
+
+##' @export
+##' @rdname covset
+as.covset <- function(x) {
+  if(!is.list(x)) stop("x needs to be a list")
+  structure(x,class="covset")  
 }
 
 apply_covset <- function(data,.covset,...) {
@@ -334,4 +346,11 @@ apply_covset <- function(data,.covset,...) {
   return(data)
 }
 
+get_covsets <- function(x) {
+  if(is.environment(x)) {
+    x <- as.list(x) 
+  }
+  cl <- sapply(x,class)
+  x[cl=="covset"]
+}
 

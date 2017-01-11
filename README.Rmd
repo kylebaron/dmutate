@@ -39,7 +39,7 @@ data.frame(ID=1:20) %>%
 
 ```{r}
 a <- X ~ rnorm(50,3)
-b <- Y ~ mutate(X/2 + c)
+b <- Y ~ expr(X/2 + c)
 cov1 <- covset(a,b)
 e <- list(c=3)
 ```

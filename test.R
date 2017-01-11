@@ -2,6 +2,9 @@
 library(dplyr)
 
 library(magrittr)
+data(Theoph)
+ungroup(Theoph)
+
 
 age <- AGE ~ rnorm(50,20)
 wt <- WT ~ mutate(AGE*2 - 5)

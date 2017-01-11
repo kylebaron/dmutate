@@ -23,12 +23,13 @@ Some variables to use in formulae:
 low_wt <- 70
 high_wt <- 90
 mu <- 80
+sd <- 80
 p.female <- 0.24
 ```
 
 Use `mutate_random` to implement formulae in data frame.  We can put bounds on any simulated variable:
 ```{r,message=FALSE}
-data.frame(ID=1:20) %>% mutate_random(WT[low_wt,high_wt] ~ rnorm(mu,1))
+data.frame(ID=1:20) %>% mutate_random(WT[low_wt,high_wt] ~ rnorm(mu,sd))
 ```
 
 We can simulate from any probability distirbution in `R`:

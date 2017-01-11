@@ -2,6 +2,11 @@
 output: md_document
 ---
 
+```{r}
+knitr::opts_chunk$set(comment='.')
+```
+
+
 
 # dmutate
 Mutate a `data.frame`, adding random variates.
@@ -11,18 +16,17 @@ library(dplyr)
 library(dmutate)
 ```
 
+
+
+Some variables to use in formulae:
 ```{r, message=FALSE}
 low_wt <- 70
 high_wt <- 90
-```
-
-
-```{r, message=FALSE}
 mu <- 80
 p.female <- 0.24
 ```
 
-
+Use `mutate_random` to implement formulae in data frame
 ```{r, message=FALSE}
 data.frame(ID=1:20) %>%
   mutate(GROUP = ID%%2) %>%
@@ -30,12 +34,17 @@ data.frame(ID=1:20) %>%
   mutate_random(STUDY_RE ~ rnorm(0,sqrt(50))|GROUP) %>%
   mutate_random(SEX ~ rbinomial(p.female)) %>%
   mutate_random(sigma ~ rgamma(1,1)) %>%
-  mutate_random(kappa ~ rgamma(1,1)|GROUP)
+  mutate_random(kappa ~ rgamma(1,1)|GROUP) %>% signif(3)
 
 ```
 
 
-# Create a formula with mutate to calculate new columns in the `data.frame` using `dplyr::mutate`
+# Create formulae with `expr` to calculate new columns in the `data.frame` using `dplyr::mutate`
+
+We can easily save formulae to `R` variables.  We collect formulae together into sets called `covset`.  For better control for 
+where objects are found, we can specify an environment where objects can be found.
+
+
 
 ```{r}
 a <- X ~ rnorm(50,3)
@@ -44,10 +53,13 @@ cov1 <- covset(a,b)
 e <- list(c=3)
 ```
 
+Notice that `b` has function `expr`.  This assigns the column named `Y` (in this case) to the result of evaluating the 
+expression in the data frame using `dplyr::dmutate`.
+
 ```{r}
 data <- data.frame(ID=1:3)
 
-mutate_random(data,cov1,envir=e)
+mutate_random(data,cov1,envir=e) %>% signif(3)
 ```
 
 

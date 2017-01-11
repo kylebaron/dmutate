@@ -1,3 +1,5 @@
+    knitr::opts_chunk$set(comment='.')
+
 dmutate
 =======
 
@@ -6,11 +8,14 @@ Mutate a `data.frame`, adding random variates.
     library(dplyr)
     library(dmutate)
 
+Some variables to use in formulae:
+
     low_wt <- 70
     high_wt <- 90
-
     mu <- 80
     p.female <- 0.24
+
+Use `mutate_random` to implement formulae in data frame
 
     data.frame(ID=1:20) %>%
       mutate(GROUP = ID%%2) %>%
@@ -18,43 +23,51 @@ Mutate a `data.frame`, adding random variates.
       mutate_random(STUDY_RE ~ rnorm(0,sqrt(50))|GROUP) %>%
       mutate_random(SEX ~ rbinomial(p.female)) %>%
       mutate_random(sigma ~ rgamma(1,1)) %>%
-      mutate_random(kappa ~ rgamma(1,1)|GROUP)
+      mutate_random(kappa ~ rgamma(1,1)|GROUP) %>% signif(3)
 
-    ##    ID GROUP       WT   STUDY_RE SEX      sigma     kappa
-    ## 1   1     1 80.32378 -0.3704747   1 0.85661749 0.2132573
-    ## 2   2     0 79.25327 -0.7115024   0 0.40082579 0.4621706
-    ## 3   3     1 80.35319 -0.3704747   1 1.33974793 0.2132573
-    ## 4   4     0 80.53546 -0.7115024   0 0.20986167 0.4621706
-    ## 5   5     1 76.93256 -0.3704747   0 2.03118796 0.2132573
-    ## 6   6     0 79.60473 -0.7115024   0 0.38563430 0.4621706
-    ## 7   7     1 81.80402 -0.3704747   0 0.83128030 0.2132573
-    ## 8   8     0 79.86881 -0.7115024   0 0.13546346 0.4621706
-    ## 9   9     1 81.14828 -0.3704747   0 0.78702301 0.2132573
-    ## 10 10     0 77.82418 -0.7115024   0 0.17384805 0.4621706
-    ## 11 11     1 79.08667 -0.3704747   1 1.42149755 0.2132573
-    ## 12 12     0 78.06920 -0.7115024   0 1.56182678 0.4621706
-    ## 13 13     1 81.17863 -0.3704747   0 1.82050989 0.2132573
-    ## 14 14     0 80.07103 -0.7115024   0 0.25365423 0.4621706
-    ## 15 15     1 79.16334 -0.3704747   0 0.33934841 0.2132573
-    ## 16 16     0 79.93156 -0.7115024   0 0.01182651 0.4621706
-    ## 17 17     1 80.50028 -0.3704747   1 0.57449146 0.2132573
-    ## 18 18     0 78.99288 -0.7115024   0 1.12499656 0.4621706
-    ## 19 19     1 80.16959 -0.3704747   1 0.37824437 0.2132573
-    ## 20 20     0 82.26249 -0.7115024   1 1.10456456 0.4621706
+    .    ID GROUP   WT STUDY_RE SEX  sigma kappa
+    . 1   1     1 80.8     8.76   0 5.4900 0.799
+    . 2   2     0 79.3    11.80   0 0.3660 3.660
+    . 3   3     1 79.2     8.76   0 0.0955 0.799
+    . 4   4     0 80.9    11.80   0 0.3710 3.660
+    . 5   5     1 81.7     8.76   0 0.7910 0.799
+    . 6   6     0 81.1    11.80   0 1.8600 3.660
+    . 7   7     1 79.3     8.76   0 0.3990 0.799
+    . 8   8     0 79.4    11.80   0 2.4300 3.660
+    . 9   9     1 79.2     8.76   0 1.1600 0.799
+    . 10 10     0 79.8    11.80   1 0.4750 3.660
+    . 11 11     1 80.0     8.76   0 0.6920 0.799
+    . 12 12     0 80.2    11.80   0 0.3380 3.660
+    . 13 13     1 80.3     8.76   0 0.5090 0.799
+    . 14 14     0 79.4    11.80   1 0.3620 3.660
+    . 15 15     1 78.7     8.76   0 2.2300 0.799
+    . 16 16     0 80.5    11.80   0 1.8500 3.660
+    . 17 17     1 79.8     8.76   0 1.0900 0.799
+    . 18 18     0 78.8    11.80   0 1.3300 3.660
+    . 19 19     1 78.8     8.76   0 1.1800 0.799
+    . 20 20     0 79.5    11.80   1 0.9970 3.660
 
-Create a formula with mutate to calculate new columns in the `data.frame` using `dplyr::mutate`
-===============================================================================================
+Create formulae with `expr` to calculate new columns in the `data.frame` using `dplyr::mutate`
+==============================================================================================
+
+We can easily save formulae to `R` variables. We collect formulae
+together into sets called `covset`. For better control for where objects
+are found, we can specify an environment where objects can be found.
 
     a <- X ~ rnorm(50,3)
     b <- Y ~ expr(X/2 + c)
     cov1 <- covset(a,b)
     e <- list(c=3)
 
+Notice that `b` has function `expr`. This assigns the column named `Y`
+(in this case) to the result of evaluating the expression in the data
+frame using `dplyr::dmutate`.
+
     data <- data.frame(ID=1:3)
 
-    mutate_random(data,cov1,envir=e)
+    mutate_random(data,cov1,envir=e) %>% signif(3)
 
-    ##   ID        X        Y
-    ## 1  1 46.31891 26.15945
-    ## 2  2 47.57885 26.78942
-    ## 3  3 52.84663 29.42332
+    .   ID    X    Y
+    . 1  1 48.8 27.4
+    . 2  2 52.8 29.4
+    . 3  3 46.2 26.1

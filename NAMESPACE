@@ -2,9 +2,12 @@
 
 S3method(nonull,default)
 S3method(nonull,list)
+S3method(print,covobj)
+S3method(print,covset)
 export(as.covset)
 export(covset)
 export(mutate_random)
+export(new_covobj)
 exportMethods(as.list)
 exportMethods(mutate_random)
 importFrom(dplyr,bind_cols)

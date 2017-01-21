@@ -29,17 +29,17 @@ p.female <- 0.24
 
 Use `mutate_random` to implement formulae in data frame.  We can put bounds on any simulated variable
 ```{r,message=FALSE}
-data.frame(ID=1:20) %>% mutate_random(WT[low_wt,high_wt] ~ rnorm(mu_wt,sd))
+data.frame(ID=1:10) %>% mutate_random(WT[low_wt,high_wt] ~ rnorm(mu_wt,sd))
 ```
 
 We can simulate from any probability distirbution in `R`
 ```{r,message=FALSE}
-data.frame(ID=1:20) %>% mutate_random(X ~ rcauchy(0,0.5))
+data.frame(ID=1:10) %>% mutate_random(X ~ rcauchy(0,0.5))
 ```
 
 We can add the variate at any level
 ```{r,message=FALSE}
-data.frame(ID=1:20) %>%
+data.frame(ID=1:10) %>%
   mutate(GROUP = ID%%2) %>%
   mutate_random(STUDY_RE ~ rnorm(50,sqrt(50))|GROUP)
 ```
@@ -57,7 +57,7 @@ data.frame(ID=1:10000) %>%
 
 An extended example:
 ```{r, message=FALSE}
-data.frame(ID=1:20) %>%
+data.frame(ID=1:10) %>%
   mutate(GROUP = ID%%2) %>%
   mutate_random(WT[low_wt,high_wt] ~ rnorm(mu_wt,1)) %>%
   mutate_random(STUDY_RE ~ rnorm(0,sqrt(50))|GROUP) %>%

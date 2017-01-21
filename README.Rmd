@@ -23,7 +23,7 @@ Some variables to use in formulae:
 low_wt <- 70
 high_wt <- 90
 mu_wt <- 80
-sd <- 80
+sd <- 60
 p.female <- 0.24
 ```
 
@@ -48,8 +48,18 @@ Simulate multivariate normal with bounds
 ```{r}
 mu <- c(2,200)
 Sigma <- diag(c(10,1000))
+XY <- X[0,] + Y[200,300] ~ rmvnorm(mu,Sigma)
+```
+The object
+```{r}
+XY
+```
+
+
+Simulate
+```{r}
 data.frame(ID=1:10000) %>%
-  mutate_random(X[0,] + Y[200,300] ~ rmvnorm(mu,Sigma)) %>% 
+  mutate_random(XY) %>% 
   summary
 ```
 

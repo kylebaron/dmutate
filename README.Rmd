@@ -17,6 +17,7 @@ library(dmutate)
 ```
 
 
+### Univariate examples
 
 Some variables to use in formulae:
 ```{r, message=FALSE}
@@ -44,7 +45,7 @@ data.frame(ID=1:10) %>%
   mutate_random(STUDY_RE ~ rnorm(50,sqrt(50))|GROUP)
 ```
 
-Simulate multivariate normal with bounds
+### Simulate multivariate normal with bounds
 ```{r}
 mu <- c(2,200)
 Sigma <- diag(c(10,1000))
@@ -65,7 +66,7 @@ data.frame(ID=1:10000) %>%
 
 
 
-An extended example:
+### An extended example
 ```{r, message=FALSE}
 data.frame(ID=1:10) %>%
   mutate(GROUP = ID%%2) %>%

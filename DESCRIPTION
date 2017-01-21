@@ -1,12 +1,14 @@
 Package: dmutate
 Type: Package
-Title: What the Package Does (Title Case)
+Title: Mutate data frames with random variates.
 Version: 0.0.1
 Imports: dplyr
 Depends: methods
-Author: Kyle Baron
+Authors@R: c(
+    person("Kyle T", "Baron", "", "kyleb@metrumrg.com", c("aut", "cre", "cph"))
+    )
 Maintainer: Kyle Baron <devgithub@fastmail.fm>
-Description: Mutate data frames with random variates.
+Description: This package works with dplyr::mutate to simulate bounded random variates at different levels and add as columns to a data frame.
 License: MIT
 LazyData: TRUE
 RoxygenNote: 5.0.1

@@ -22,17 +22,17 @@ Some variables to use in formulae:
 ```{r, message=FALSE}
 low_wt <- 70
 high_wt <- 90
-mu <- 80
+mu_wt <- 80
 sd <- 80
 p.female <- 0.24
 ```
 
-Use `mutate_random` to implement formulae in data frame.  We can put bounds on any simulated variable:
+Use `mutate_random` to implement formulae in data frame.  We can put bounds on any simulated variable
 ```{r,message=FALSE}
-data.frame(ID=1:20) %>% mutate_random(WT[low_wt,high_wt] ~ rnorm(mu,sd))
+data.frame(ID=1:20) %>% mutate_random(WT[low_wt,high_wt] ~ rnorm(mu_wt,sd))
 ```
 
-We can simulate from any probability distirbution in `R`:
+We can simulate from any probability distirbution in `R`
 ```{r,message=FALSE}
 data.frame(ID=1:20) %>% mutate_random(X ~ rcauchy(0,0.5))
 ```
@@ -44,11 +44,22 @@ data.frame(ID=1:20) %>%
   mutate_random(STUDY_RE ~ rnorm(50,sqrt(50))|GROUP)
 ```
 
+Simulate multivariate normal with bounds
+```{r}
+mu <- c(2,200)
+Sigma <- diag(c(10,1000))
+data.frame(ID=1:10000) %>%
+  mutate_random(X[0,] + Y[200,300] ~ rmvnorm(mu,Sigma)) %>% 
+  summary
+```
+
+
+
 An extended example:
 ```{r, message=FALSE}
 data.frame(ID=1:20) %>%
   mutate(GROUP = ID%%2) %>%
-  mutate_random(WT[low_wt,high_wt] ~ rnorm(mu,1)) %>%
+  mutate_random(WT[low_wt,high_wt] ~ rnorm(mu_wt,1)) %>%
   mutate_random(STUDY_RE ~ rnorm(0,sqrt(50))|GROUP) %>%
   mutate_random(SEX ~ rbinomial(p.female)) %>%
   mutate_random(sigma ~ rgamma(1,1)) %>%
@@ -67,7 +78,8 @@ where objects are found, we can specify an environment where objects can be foun
 ```{r}
 a <- X ~ rnorm(50,3)
 b <- Y ~ expr(X/2 + c)
-cov1 <- covset(a,b)
+d <- A+B ~ rlmvnorm(log(c(20,80)),diag(c(0.2,0.2)))
+cov1 <- covset(a,b,d)
 e <- list(c=3)
 ```
 

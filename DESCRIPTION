@@ -2,7 +2,7 @@ Package: dmutate
 Type: Package
 Title: What the Package Does (Title Case)
 Version: 0.0.1
-Imports: dplyr
+Imports: dplyr, MASS
 Depends: methods
 Author: Kyle Baron
 Maintainer: Kyle Baron <devgithub@fastmail.fm>

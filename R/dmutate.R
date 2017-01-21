@@ -12,7 +12,7 @@ setClass("covset")
 ##' @importFrom stats rbinom setNames
 ##' @importFrom utils type.convert
 ##' @importFrom methods setGeneric
-##' @importFrom MASS mvrnorm
+##' 
 setGeneric("mutate_random", function(data,input,...) standardGeneric("mutate_random"))
 
 
@@ -100,8 +100,21 @@ bound <- function(call,n,envir=list(),mult=1.3,mn=-Inf,mx=Inf,tries=10) {
 
 rbinomial <- function(n,p,...) rbinom(n,1,p)
 rlnorm <- function(...) exp(rnorm(...))
-rmvnorm <- function(n,...) mvrnorm(n,...)
-rlmvnorm <- function(n,...) exp(mvrnorm(n,...))
+rmvnorm <- function(n, mu, Sigma) {
+  if(!is.matrix(Sigma)) {
+    stop("Sigma should be a matrix.")
+  }
+  if(length(mu) != ncol(Sigma)) {
+    stop("Incompatible inputs.") 
+  }
+  if(det(Sigma) < 0) {
+    stop("Determinant: ", det(Sigma)) 
+  }
+  ncols <- ncol(Sigma)
+  mu <- rep(mu, each = n)
+  mu + matrix(rnorm(n * ncols), ncol = ncols) %*% chol(Sigma)
+}
+rlmvnorm <- function(n,...) exp(rmvnorm(n,...))
 
 first_comma <- function(x,start=1) {
   open <- 0
@@ -269,6 +282,11 @@ Parse <- function(x) parse(text=x)
 
 mvrnorm_bound <- function(call,n,envir=list(),mult=1.3,
                           mn=-Inf,mx=Inf,tries=10) {
+  
+  if(length(mn) < 2) {
+    stop("At least 2 variables required from rmvnorm simulation.",call.=FALSE) 
+  }
+  
   envir$.n <- n
   
   if(all(mn==-Inf) & all(mx==Inf)) {

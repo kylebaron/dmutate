@@ -12,10 +12,12 @@ rlmvnorm(n, ...)
 \arguments{
 \item{n}{number of variates}
 
+\item{mu}{vector of means}
+
 \item{Sigma}{variance-covariance matrix with number of columns equal to
 length of \code{mu}}
 
-\item{numeric}{vector of means}
+\item{...}{arguments passed to \code{rmvnorm}}
 }
 \value{
 Returns a matrix of variates with number of rows

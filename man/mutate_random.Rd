@@ -14,20 +14,24 @@ mutate_random(data, input, ...)
 
 \S4method{mutate_random}{data.frame,formula}(data, input, ...)
 
-\S4method{mutate_random}{data.frame,character}(data, input, ...)
+\S4method{mutate_random}{data.frame,character}(data, input,
+  envir = parent.frame(), ...)
 
 \S4method{mutate_random}{data.frame,list}(data, input, ...)
 
 \S4method{mutate_random}{data.frame,covset}(data, input, ...)
 
-\S4method{mutate_random}{data.frame,covobj}(data, input, ...)
+\S4method{mutate_random}{data.frame,covobj}(data, input,
+  envir = parent.frame(), ...)
 }
 \arguments{
 \item{data}{the data.frame to mutate}
 
-\item{input}{an unquoted R formula; see details.}
+\item{input}{an unquoted R formula; see details}
 
 \item{...}{additional inputs}
+
+\item{envir}{environment for object lookup}
 }
 \description{
 Add random variates to a data frame.

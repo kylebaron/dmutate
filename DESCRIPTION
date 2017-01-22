@@ -1,6 +1,6 @@
 Package: dmutate
 Type: Package
-Title: Mutate data frames with random variates.
+Title: Mutate data frames with random variates
 Version: 0.0.1
 Imports: dplyr
 Depends: methods

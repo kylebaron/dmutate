@@ -4,34 +4,33 @@ setClass("covset")
 ##' Add random variates to a data frame.
 ##'
 ##' @param data the data.frame to mutate
-##' @param input an unquoted R formula; see details.
+##' @param input an unquoted R formula; see details
+##' @param envir environment for object lookup
 ##' @param ... additional inputs
 ##'
 ##' @export
-##' @importFrom dplyr left_join bind_cols data_frame select_ mutate_ ungroup
-##' @importFrom stats rbinom setNames
+##' @importFrom dplyr left_join bind_cols data_frame select_ mutate_ ungroup group_by_
+##' @importFrom stats rbinom rnorm setNames
 ##' @importFrom utils type.convert
 ##' @importFrom methods setGeneric
 ##'
 setGeneric("mutate_random", function(data,input,...) standardGeneric("mutate_random"))
 
-
 ##' @export
 ##' @rdname mutate_random
 ##'
 setMethod("mutate_random", c("data.frame","formula"), function(data,input,...) {
-  input <- new_covobj(input)
-  do_mutate(data,x=input,...)
+  x <- new_covobj(input,envir=environment(input))
+  do_mutate(data,x=x,...)
 })
-
 
 ##' @export
 ##' @rdname mutate_random
-setMethod("mutate_random", c("data.frame", "character"), function(data,input,...) {
-  input <- new_covobj(input)
+setMethod("mutate_random", c("data.frame", "character"), function(data,input,envir=parent.frame(),...) {
+  input <- new_covobj(input,envir=envir)
   args <- input$args
   input$args <- NULL
-  args <- c(args,list(x=input,data=data),list(...))
+  args <- c(args,list(x=input,data=data,envir=envir),list(...))
   do.call(do_mutate,args)
 })
 
@@ -40,18 +39,18 @@ setMethod("mutate_random", c("data.frame", "character"), function(data,input,...
 setMethod("mutate_random", c("data.frame", "list"), function(data,input,...) {
   apply_covset(data,input,...)
 })
+
 ##' @export
 ##' @rdname mutate_random
 setMethod("mutate_random", c("data.frame", "covset"), function(data,input,...) {
   apply_covset(data,input,...)
 })
+
 ##' @export
 ##' @rdname mutate_random
-setMethod("mutate_random", c("data.frame", "covobj"), function(data,input,...) {
-  do_mutate(data,input,...)
+setMethod("mutate_random", c("data.frame", "covobj"), function(data,input,envir=parent.frame(),...) {
+  do_mutate(data,input,envir=envir,...)
 })
-
-
 
 parse_left_var <- function(x) {
   m <- regexec("(\\w+)(\\[(\\w+)?\\,(\\w+)?\\])?", x)
@@ -125,7 +124,7 @@ rlnorm <- function(...) exp(rnorm(...))
 ##' Simulate from multivariate normal distribution.
 ##'
 ##' @param n number of variates
-##' @param numeric vector of means
+##' @param mu vector of means
 ##' @param Sigma variance-covariance matrix with number of columns equal to
 ##' length of \code{mu}
 ##'
@@ -148,6 +147,7 @@ rmvnorm <- function(n, mu, Sigma) {
   mu + matrix(rnorm(n * ncols), ncol = ncols) %*% chol(Sigma)
 }
 ##' @rdname rmvnorm
+##' @param ... arguments passed to \code{rmvnorm}
 rlmvnorm <- function(n,...) exp(rmvnorm(n,...))
 
 first_comma <- function(x,start=1) {
@@ -227,9 +227,13 @@ parse_form_3 <- function(x) {
 
 # @param data a data frame
 # @param x a covobj
-do_mutate <- function(data,x,envir=list(),tries=10,mult=1.5,...) {
+do_mutate <- function(data,x,envir=parent.frame(),tries=10,mult=1.5,...) {
 
   data <- ungroup(data)
+
+  if(missing(envir)) {
+    envir <- x$envir
+  }
 
   if(call_type(x)==2) {
     .dots <- paste0("list(~",x$call,")")
@@ -238,7 +242,7 @@ do_mutate <- function(data,x,envir=list(),tries=10,mult=1.5,...) {
     if(x$by != "") {
       data <- group_by_(data,.dots=x$by)
     }
-    data <- mutate_(data, .dots=.dots) %>% ungroup
+    data <- ungroup(mutate_(data, .dots=.dots))
     return(data)
   }
 
@@ -277,11 +281,12 @@ do_mutate <- function(data,x,envir=list(),tries=10,mult=1.5,...) {
 
 ##' Create a set of covariates.
 ##' @param ... formulae to use for the covset
+##' @param envir for formulae
 ##' @export
 ##'
-covset <- function(...,envir = parent.frame()) {
+covset <- function(...,envir=parent.frame()) {
   x <- list(...)
-  x <- lapply(x,new_covobj)
+  x <- lapply(x,new_covobj,envir=envir)
   return(structure(x,class="covset"))
 }
 
@@ -333,7 +338,8 @@ mvrnorm_bound <- function(call,n,envir=list(),mult=1.3,
     var <- eval(call,envir=envir)
     w <- sapply(seq_along(mn), function(ii) {
       var[,ii] >= mn[ii] & var[,ii] <= mx[ii]
-    }) %>% apply(MARGIN=1,all)
+    })
+    w <- apply(w,MARGIN=1,all)
     var <- var[w,]
     ngot <- ngot+nrow(var)
     out[[i]] <- var

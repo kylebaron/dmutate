@@ -131,7 +131,7 @@ if.file.remove <- function(x) {
 
 
 as_character_args <- function(x) {
-  x <- deparse(x)
+  x <- deparse(x,width.cutoff=500)
   x <- gsub("^.*\\(|\\)$", "", x)
   x
 }

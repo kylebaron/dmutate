@@ -79,22 +79,20 @@ parse_left <- function(x) {
 
 
 bound <- function(call,n,envir=list(),mult=1.3,mn=-Inf,mx=Inf,tries=10) {
-  n0 <- n
-  n <- n*mult
   ngot <- 0
   y <- numeric(0)
-  envir$.n <- n
+  envir$.n <- ceiling(n*mult)
   for(i in seq(1,tries)) {
     yy <- eval(call,envir=envir)
     yy <- yy[yy > mn & yy < mx]
     ngot <- ngot + length(yy)
     y <- c(yy,y)
-    if(ngot > n0) break
+    if(ngot >= n) break
   }
-  if(ngot < n0) {
+  if(ngot < n) {
     stop("Could not simulate required variates within given bounds in ", tries, " tries", call.=FALSE)
   }
-  return(y[1:n0])
+  return(y[1:n])
 }
 
 
@@ -329,13 +327,12 @@ mvrnorm_bound <- function(call,n,envir=list(),mult=1.3,
     stop("At least 2 variables required from rmvnorm simulation.",call.=FALSE)
   }
 
-  envir$.n <- n
+  envir$.n <- ceiling(n*mult)
 
   if(all(mn==-Inf) & all(mx==Inf)) {
     return(as.data.frame(eval(call,envir=envir)))
   }
 
-  nn <- n*mult
   out <- vector("list", tries)
   ngot <- 0
   for(i in seq(1,tries)) {
@@ -344,7 +341,7 @@ mvrnorm_bound <- function(call,n,envir=list(),mult=1.3,
       var[,ii] >= mn[ii] & var[,ii] <= mx[ii]
     })
     w <- apply(w,MARGIN=1,all)
-    var <- var[w,]
+    var <- var[w,,drop=FALSE]
     ngot <- ngot+nrow(var)
     out[[i]] <- var
     if(ngot >= n) {
@@ -352,7 +349,7 @@ mvrnorm_bound <- function(call,n,envir=list(),mult=1.3,
     }
   }
 
-  if(ngot > n) {
+  if(ngot >= n) {
     out <- as.data.frame(do.call("rbind",out)[1:n,])
   } else {
     stop("Couldn't generate the required number of variates.")

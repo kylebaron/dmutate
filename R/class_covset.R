@@ -14,7 +14,7 @@ new_covobj <- function(x,envir = parent.frame(),...) {
       return(x)
     }
   }
-  if(is.language(x)) x <- deparse(x)
+  if(is.language(x)) x <- deparse(x,width.cutoff=500)
   formula <- x
   x <- parse_form_3(x)
   x$formula <- formula

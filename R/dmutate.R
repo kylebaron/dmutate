@@ -109,6 +109,7 @@ bound <- function(call,n,envir=list(),mult=1.3,mn=-Inf,mx=Inf,tries=10) {
 ##' @details
 ##' The \code{size} of each trial is always 1.
 ##'
+##' @export
 rbinomial <- function(n,p,...) rbinom(n,1,p)
 
 ##' Simulate from log-normal distirbution.
@@ -118,7 +119,7 @@ rbinomial <- function(n,p,...) rbinom(n,1,p)
 ##' @param ... passed to \code{\link{rnorm}}
 ##'
 ##'
-##'
+##' @export
 rlnorm <- function(...) exp(rnorm(...))
 
 ##' Simulate from multivariate normal distribution.
@@ -132,6 +133,8 @@ rlnorm <- function(...) exp(rnorm(...))
 ##'
 ##' @return Returns a matrix of variates with number of rows
 ##' equal to \code{n} and mumber of columns equal to length of \code{mu}.
+##'
+##' @export
 rmvnorm <- function(n, mu, Sigma) {
   if(!is.matrix(Sigma)) {
     stop("Sigma should be a matrix.")
@@ -148,6 +151,7 @@ rmvnorm <- function(n, mu, Sigma) {
 }
 ##' @rdname rmvnorm
 ##' @param ... arguments passed to \code{rmvnorm}
+##' @export
 rlmvnorm <- function(n,...) exp(rmvnorm(n,...))
 
 first_comma <- function(x,start=1) {

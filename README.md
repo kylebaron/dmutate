@@ -21,35 +21,36 @@ Some variables to use in formulae:
 Use `mutate_random` to implement formulae in data frame. We can put
 bounds on any simulated variable
 
-    data.frame(ID=1:10) %>% mutate_random(WT[low_wt,high_wt] ~ rnorm(mu_wt,sd))
+    data.frame(ID=1:10) %>% 
+      mutate_random(WT[low_wt,high_wt] ~ rnorm(mu_wt,sd))
 
     .    ID       WT
-    . 1   1 73.74197
-    . 2   2 80.21811
-    . 3   3 76.76447
-    . 4   4 71.25025
-    . 5   5 84.90590
-    . 6   6 85.68872
-    . 7   7 70.50496
-    . 8   8 79.47146
-    . 9   9 80.87770
-    . 10 10 81.78786
+    . 1   1 83.89062
+    . 2   2 83.89177
+    . 3   3 85.91495
+    . 4   4 84.18830
+    . 5   5 87.98526
+    . 6   6 86.17794
+    . 7   7 88.48437
+    . 8   8 79.22966
+    . 9   9 70.55973
+    . 10 10 88.02533
 
 We can simulate from any probability distirbution in `R`
 
     data.frame(ID=1:10) %>% mutate_random(X ~ rcauchy(0,0.5))
 
     .    ID           X
-    . 1   1  1.21283656
-    . 2   2  0.17784736
-    . 3   3 -0.09226413
-    . 4   4 -2.39699832
-    . 5   5 -0.27801132
-    . 6   6  4.04663029
-    . 7   7  1.02476585
-    . 8   8  0.65891848
-    . 9   9  1.65798317
-    . 10 10  0.17429262
+    . 1   1 -5.90570404
+    . 2   2  0.39120703
+    . 3   3  0.17019535
+    . 4   4 -0.98593114
+    . 5   5  0.46266157
+    . 6   6 -0.54815000
+    . 7   7 -0.12903556
+    . 8   8 -0.01365122
+    . 9   9 -0.16284835
+    . 10 10  0.42695029
 
 We can add the variate at any level
 
@@ -58,16 +59,16 @@ We can add the variate at any level
       mutate_random(STUDY_RE ~ rnorm(50,sqrt(50))|GROUP)
 
     .    ID GROUP STUDY_RE
-    . 1   1     1 40.95348
-    . 2   2     0 53.60148
-    . 3   3     1 40.95348
-    . 4   4     0 53.60148
-    . 5   5     1 40.95348
-    . 6   6     0 53.60148
-    . 7   7     1 40.95348
-    . 8   8     0 53.60148
-    . 9   9     1 40.95348
-    . 10 10     0 53.60148
+    . 1   1     1 57.19321
+    . 2   2     0 44.30111
+    . 3   3     1 57.19321
+    . 4   4     0 44.30111
+    . 5   5     1 57.19321
+    . 6   6     0 44.30111
+    . 7   7     1 57.19321
+    . 8   8     0 44.30111
+    . 9   9     1 57.19321
+    . 10 10     0 44.30111
 
 ### Simulate multivariate normal with bounds
 
@@ -80,6 +81,7 @@ The object
     XY
 
     . X[0, ] + Y[200, 300] ~ rmvnorm(mu, Sigma)
+    . <environment: 0x1115a19b8>
 
 Simulate
 
@@ -88,12 +90,12 @@ Simulate
       summary
 
     .        ID              X                   Y        
-    .  Min.   :    1   Min.   : 0.001509   Min.   :200.0  
-    .  1st Qu.: 2501   1st Qu.: 1.592103   1st Qu.:210.0  
-    .  Median : 5000   Median : 3.012502   Median :221.2  
-    .  Mean   : 5000   Mean   : 3.383010   Mean   :225.2  
-    .  3rd Qu.: 7500   3rd Qu.: 4.860364   3rd Qu.:236.3  
-    .  Max.   :10000   Max.   :14.382681   Max.   :299.2
+    .  Min.   :    1   Min.   : 0.002774   Min.   :200.0  
+    .  1st Qu.: 2501   1st Qu.: 1.567587   1st Qu.:209.9  
+    .  Median : 5000   Median : 3.106607   Median :221.4  
+    .  Mean   : 5000   Mean   : 3.415481   Mean   :225.2  
+    .  3rd Qu.: 7500   3rd Qu.: 4.886991   3rd Qu.:236.3  
+    .  Max.   :10000   Max.   :13.232817   Max.   :299.9
 
 ### An extended example
 
@@ -105,17 +107,17 @@ Simulate
       mutate_random(sigma ~ rgamma(1,1)) %>%
       mutate_random(kappa ~ rgamma(1,1)|GROUP) %>% signif(3)
 
-    .    ID GROUP   WT STUDY_RE SEX sigma kappa
-    . 1   1     1 79.5    -3.91   0 0.318 1.380
-    . 2   2     0 79.6    16.70   0 0.858 0.337
-    . 3   3     1 80.3    -3.91   0 0.877 1.380
-    . 4   4     0 79.6    16.70   1 0.912 0.337
-    . 5   5     1 81.3    -3.91   0 0.575 1.380
-    . 6   6     0 79.0    16.70   1 0.809 0.337
-    . 7   7     1 80.5    -3.91   0 0.282 1.380
-    . 8   8     0 80.7    16.70   0 0.732 0.337
-    . 9   9     1 77.2    -3.91   0 0.615 1.380
-    . 10 10     0 78.0    16.70   0 0.426 0.337
+    .    ID GROUP   WT STUDY_RE SEX  sigma kappa
+    . 1   1     1 78.7    -6.31   0 4.5200  1.48
+    . 2   2     0 80.1     4.96   1 0.4530  1.39
+    . 3   3     1 81.3    -6.31   1 2.0500  1.48
+    . 4   4     0 80.4     4.96   0 0.5980  1.39
+    . 5   5     1 78.8    -6.31   1 0.0832  1.48
+    . 6   6     0 81.3     4.96   0 3.3400  1.39
+    . 7   7     1 79.3    -6.31   0 0.3940  1.48
+    . 8   8     0 78.8     4.96   0 1.9200  1.39
+    . 9   9     1 81.3    -6.31   0 1.0800  1.48
+    . 10 10     0 81.9     4.96   0 0.4830  1.39
 
 Create formulae with `expr` to calculate new columns in the `data.frame` using `dplyr::mutate`
 ==============================================================================================
@@ -134,11 +136,11 @@ Notice that `b` has function `expr`. This assigns the column named `Y`
 (in this case) to the result of evaluating the expression in the data
 frame using `dplyr::dmutate`.
 
-    data <- data.frame(ID=1:3)
+    .data <- data.frame(ID=1:3)
 
-    mutate_random(data,cov1,envir=e) %>% signif(3)
+    mutate_random(.data,cov1,envir=e) %>% signif(3)
 
     .   ID    X    Y    A     B
-    . 1  1 47.3 26.6 19.4  91.9
-    . 2  2 44.5 25.3 33.5  59.0
-    . 3  3 48.8 27.4 13.5 133.0
+    . 1  1 49.8 27.9 54.7  43.4
+    . 2  2 45.3 25.7 24.3 108.0
+    . 3  3 49.7 27.9 66.3 123.0

@@ -12,7 +12,7 @@ setClass("covset")
 ##' @importFrom stats rbinom setNames
 ##' @importFrom utils type.convert
 ##' @importFrom methods setGeneric
-##' 
+##'
 setGeneric("mutate_random", function(data,input,...) standardGeneric("mutate_random"))
 
 
@@ -93,27 +93,61 @@ bound <- function(call,n,envir=list(),mult=1.3,mn=-Inf,mx=Inf,tries=10) {
     if(ngot > n0) break
   }
   if(ngot < n0) {
-    stop("Could not simulate required variates within given bounds in ", tries, " tries", call.=FALSE) 
+    stop("Could not simulate required variates within given bounds in ", tries, " tries", call.=FALSE)
   }
   return(y[1:n0])
 }
 
+
+##' Simulate from binomial distribution.
+##'
+##' Wrapper for \code{\link{rbinom}}  with trial size of 1.
+##'
+##' @param n number of variates
+##' @param p probability of success
+##' @param ... passed along as appropriate
+##'
+##' @details
+##' The \code{size} of each trial is always 1.
+##'
 rbinomial <- function(n,p,...) rbinom(n,1,p)
+
+##' Simulate from log-normal distirbution.
+##'
+##' Wrapper around \code{\link{rnorm}}.
+##'
+##' @param ... passed to \code{\link{rnorm}}
+##'
+##'
+##'
 rlnorm <- function(...) exp(rnorm(...))
+
+##' Simulate from multivariate normal distribution.
+##'
+##' @param n number of variates
+##' @param numeric vector of means
+##' @param Sigma variance-covariance matrix with number of columns equal to
+##' length of \code{mu}
+##'
+##' @details \code{rlmvnorm} is a multivariate log normal.
+##'
+##' @return Returns a matrix of variates with number of rows
+##' equal to \code{n} and mumber of columns equal to length of \code{mu}.
 rmvnorm <- function(n, mu, Sigma) {
   if(!is.matrix(Sigma)) {
     stop("Sigma should be a matrix.")
   }
   if(length(mu) != ncol(Sigma)) {
-    stop("Incompatible inputs.") 
+    stop("Incompatible inputs.")
   }
   if(det(Sigma) < 0) {
-    stop("Determinant: ", det(Sigma)) 
+    stop("Determinant: ", det(Sigma))
   }
   ncols <- ncol(Sigma)
   mu <- rep(mu, each = n)
   mu + matrix(rnorm(n * ncols), ncol = ncols) %*% chol(Sigma)
 }
+##' @rdname rmvnorm
 rlmvnorm <- function(n,...) exp(rmvnorm(n,...))
 
 first_comma <- function(x,start=1) {
@@ -152,17 +186,17 @@ peval <- function(x) eval(parse(text=x))
 #   form <- parse_form_3(form)
 #   c(form,list(args=args))
 # }
-# 
+#
 
 parse_form_3 <- function(x) {
-  
+
   x <- rm_space(x)
-  
+
   til <- where_first("~",x)
   bar <- where_first("|",x)
   left <- substr(x,0,til-1)
-  
-  
+
+
   if(bar > 0) {
     right <- substr(x,til+1,bar-1)
     group <- substr(x,bar+1,nchar(x))
@@ -170,21 +204,21 @@ parse_form_3 <- function(x) {
     right <- substr(x,til+1,nchar(x))
     group <- ""
   }
-  
+
   op <- where_first("(",right)
   dist <- substr(right,0,op-1)
-  
+
   if(substr(dist,0,1)=="r") {
     if(names(formals(dist))[1]=="n") {
     right <- sub("(", "(.n,",right,fixed=TRUE)
     }
   }
-  
+
   if(dist=="expr") {
     right <- as.character(right)
     right <- gsub("expr\\((.+)\\)$", "\\1", right)
   }
-  
+
   right <- parse(text=right)
   left <- parse_left(left)
   c(left,list(call=right,by=group,dist=dist))
@@ -194,38 +228,37 @@ parse_form_3 <- function(x) {
 # @param data a data frame
 # @param x a covobj
 do_mutate <- function(data,x,envir=list(),tries=10,mult=1.5,...) {
-  
+
   data <- ungroup(data)
-  
+
   if(call_type(x)==2) {
     .dots <- paste0("list(~",x$call,")")
     .dots <- eval(parse(text=.dots),envir=envir)
     names(.dots) <- x$vars
     if(x$by != "") {
-      data <- group_by_(data,.dots=x$by) 
+      data <- group_by_(data,.dots=x$by)
     }
     data <- mutate_(data, .dots=.dots) %>% ungroup
     return(data)
   }
-  
 
   if(tries <=0) stop("tries must be >= 1")
-  
+
   x$by <- c(x$by,x$opts$by)
   x$by <- x$by[x$by != ""]
-  
+
   has.by <- any(nchar(x$by) > 0)
-  
+
   if(has.by) {
     skele <- dplyr::distinct_(data,.dots=x$by)
     n <- nrow(skele)
   } else {
     n <- nrow(data)
   }
-  
+
   mn <- eval(x$lower,envir=envir)
   mx <- eval(x$upper,envir=envir)
-  
+
   if(x$dist %in% c("rmvnorm", "rlmvnorm")) {
     r <- mvrnorm_bound(x$call,n=n,mn=mn,mx=mx,tries=tries,envir=envir)
   } else {
@@ -246,7 +279,7 @@ do_mutate <- function(data,x,envir=list(),tries=10,mult=1.5,...) {
 ##' @param ... formulae to use for the covset
 ##' @export
 ##'
-covset <- function(...) {
+covset <- function(...,envir = parent.frame()) {
   x <- list(...)
   x <- lapply(x,new_covobj)
   return(structure(x,class="covset"))
@@ -259,7 +292,7 @@ is.covset <- function(x) return(inherits(x,"covset"))
 ##' @rdname covset
 as.covset <- function(x) {
   if(!is.list(x)) stop("x needs to be a list")
-  structure(x,class="covset")  
+  structure(x,class="covset")
 }
 
 apply_covset <- function(data,.covset,...) {
@@ -271,7 +304,7 @@ apply_covset <- function(data,.covset,...) {
 
 get_covsets <- function(x) {
   if(is.environment(x)) {
-    x <- as.list(x) 
+    x <- as.list(x)
   }
   cl <- sapply(x,class)
   x[cl=="covset"]
@@ -282,17 +315,17 @@ Parse <- function(x) parse(text=x)
 
 mvrnorm_bound <- function(call,n,envir=list(),mult=1.3,
                           mn=-Inf,mx=Inf,tries=10) {
-  
+
   if(length(mn) < 2) {
-    stop("At least 2 variables required from rmvnorm simulation.",call.=FALSE) 
+    stop("At least 2 variables required from rmvnorm simulation.",call.=FALSE)
   }
-  
+
   envir$.n <- n
-  
+
   if(all(mn==-Inf) & all(mx==Inf)) {
     return(as.data.frame(eval(call,envir=envir)))
   }
-  
+
   nn <- n*mult
   out <- vector("list", tries)
   ngot <- 0
@@ -300,19 +333,19 @@ mvrnorm_bound <- function(call,n,envir=list(),mult=1.3,
     var <- eval(call,envir=envir)
     w <- sapply(seq_along(mn), function(ii) {
       var[,ii] >= mn[ii] & var[,ii] <= mx[ii]
-    }) %>% apply(MARGIN=1,all) 
+    }) %>% apply(MARGIN=1,all)
     var <- var[w,]
     ngot <- ngot+nrow(var)
     out[[i]] <- var
     if(ngot >= n) {
-      break 
-    } 
+      break
+    }
   }
-  
+
   if(ngot > n) {
     out <- as.data.frame(do.call("rbind",out)[1:n,])
   } else {
-    stop("Couldn't generate the required number of variates.") 
+    stop("Couldn't generate the required number of variates.")
   }
   return(out)
 }

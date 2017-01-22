@@ -11,7 +11,7 @@
 \alias{print.covset}
 \title{Covobj and covset objects.}
 \usage{
-new_covobj(x, ...)
+new_covobj(x, envir = parent.frame(), ...)
 
 \method{print}{covobj}(x, ...)
 
@@ -21,7 +21,7 @@ new_covobj(x, ...)
 
 \method{print}{covset}(x, ...)
 
-covset(...)
+covset(..., envir = parent.frame())
 
 as.covset(x)
 }

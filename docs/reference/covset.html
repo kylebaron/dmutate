@@ -75,7 +75,7 @@
     <p>Create a set of covariates.</p>
     
 
-    <pre><span class='fu'>new_covobj</span>(<span class='no'>x</span>, <span class='no'>...</span>)
+    <pre><span class='fu'>new_covobj</span>(<span class='no'>x</span>, <span class='kw'>envir</span> <span class='kw'>=</span> <span class='fu'>parent.frame</span>(), <span class='no'>...</span>)
 
 <span class='co'># S3 method for covobj</span>
 <span class='fu'>print</span>(<span class='no'>x</span>, <span class='no'>...</span>)
@@ -89,7 +89,7 @@
 <span class='co'># S3 method for covset</span>
 <span class='fu'>print</span>(<span class='no'>x</span>, <span class='no'>...</span>)
 
-<span class='fu'>covset</span>(<span class='no'>...</span>)
+<span class='fu'>covset</span>(<span class='no'>...</span>, <span class='kw'>envir</span> <span class='kw'>=</span> <span class='fu'>parent.frame</span>())
 
 <span class='fu'>as.covset</span>(<span class='no'>x</span>)</pre>
     

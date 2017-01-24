@@ -8,6 +8,15 @@ setClass("covset")
 ##' @rdname covset
 ##' @name covset
 ##' @export
+##'
+##' @examples
+##'
+##' obj <- new_covobj(Y[0,80] ~ rnorm(20,50))
+##'
+##' obj
+##'
+##' as.list(obj)
+##'
 new_covobj <- function(x,envir = parent.frame(),...) {
   if(is.covobj(x)) {
     if(valid_covobj(x)) {
@@ -16,7 +25,7 @@ new_covobj <- function(x,envir = parent.frame(),...) {
   }
   if(is.language(x)) x <- deparse(x,width.cutoff=500)
   formula <- x
-  x <- parse_form_3(x)
+  x <- parse_form_3(x,envir)
   x$formula <- formula
   x$envir <- envir
   x <- structure(x,class="covobj")
@@ -42,8 +51,6 @@ setMethod("as.list", "covset", function(x,...) {
   x <- lapply(x,structure, class=NULL)
   structure(x,class=NULL)
 })
-
-
 
 is.covobj <- function(x) {
   inherits(x,"covobj")

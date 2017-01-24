@@ -37,4 +37,22 @@ Covobj and covset objects.
 
 Create a set of covariates.
 }
+\examples{
+
+obj <- new_covobj(Y[0,80] ~ rnorm(20,50))
+
+obj
+
+as.list(obj)
+
+a <- Y ~ runif(0,1)
+b <- Z ~ rbeta(1,1)
+
+set <- covset(a,b)
+
+set
+
+as.list(set)
+
+}
 

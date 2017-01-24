@@ -8,12 +8,23 @@ setClass("covset")
 ##' @param envir environment for object lookup
 ##' @param ... additional inputs
 ##'
-##' @export
 ##' @importFrom dplyr left_join bind_cols data_frame select_ mutate_ ungroup group_by_
 ##' @importFrom stats rbinom rnorm setNames
-##' @importFrom utils type.convert
-##' @importFrom methods setGeneric
+##' @import methods
+##' @examples
 ##'
+##' data <- data.frame(ID=1:10, GROUP = sample(c(1,2,3),10,replace=TRUE))
+##'
+##' mutate_random(data, AGE[40,90] ~ rnorm(55,50))
+##' mutate_random(data, RE ~ rbeta(1,1) | GROUP)
+##'
+##' e <- list(lower=40,upper=140,mu=100,sd=100)
+##'
+##' egfr <- covset(EGFR[lower,upper] ~ rnorm(mu,sd))
+##'
+##' mutate_random(data,egfr,envir=e)
+##'
+##' @export
 setGeneric("mutate_random", function(data,input,...) standardGeneric("mutate_random"))
 
 ##' @export
@@ -110,7 +121,6 @@ bound <- function(call,n,envir=list(),mult=1.3,mn=-Inf,mx=Inf,tries=10) {
 ##' @export
 rbinomial <- function(n,p,...) rbinom(n,1,p)
 
-
 ##' Simulate from multivariate normal distribution.
 ##'
 ##' @param n number of variates
@@ -164,24 +174,7 @@ first_comma <- function(x,start=1) {
 rm_space <- function(x) gsub(" ", "",x,fixed=TRUE)
 peval <- function(x) eval(parse(text=x))
 
-# parse_random_string <- function(string) {
-#   string <- rm_space(string)
-#   til <- where_first("~",string)
-#   a <- first_comma(string,til+1)
-#   if(a > 0) {
-#     args <- substr(string,a+1,nchar(string))
-#     args <- peval(paste0("list(",args,")"))
-#     form <- substr(string,0,a-1)
-#   } else {
-#     args <- list()
-#     form <- string
-#   }
-#   form <- parse_form_3(form)
-#   c(form,list(args=args))
-# }
-#
-
-parse_form_3 <- function(x) {
+parse_form_3 <- function(x,envir) {
 
   x <- rm_space(x)
 
@@ -202,7 +195,7 @@ parse_form_3 <- function(x) {
   dist <- substr(right,0,op-1)
 
   if(substr(dist,0,1)=="r") {
-    if(names(formals(dist))[1]=="n") {
+    if(names(formals(get(dist,envir)))[1]=="n") {
     right <- sub("(", "(.n,",right,fixed=TRUE)
     }
   }
@@ -216,7 +209,6 @@ parse_form_3 <- function(x) {
   left <- parse_left(left)
   c(left,list(call=right,by=group,dist=dist))
 }
-
 
 # @param data a data frame
 # @param x a covobj
@@ -271,18 +263,26 @@ do_mutate <- function(data,x,envir=parent.frame(),tries=10,mult=1.5,...) {
   }
 }
 
-
 ##' Create a set of covariates.
 ##' @param ... formulae to use for the covset
 ##' @param envir for formulae
-##' @export
 ##'
+##' @examples
+##' a <- Y ~ runif(0,1)
+##' b <- Z ~ rbeta(1,1)
+##'
+##' set <- covset(a,b)
+##'
+##' set
+##'
+##' as.list(set)
+##'
+##' @export
 covset <- function(...,envir=parent.frame()) {
   x <- list(...)
   x <- lapply(x,new_covobj,envir=envir)
   return(structure(x,class="covset"))
 }
-
 
 is.covset <- function(x) return(inherits(x,"covset"))
 
@@ -309,7 +309,6 @@ get_covsets <- function(x) {
 }
 
 Parse <- function(x) parse(text=x)
-
 
 mvrnorm_bound <- function(call,n,envir=list(),mult=1.3,
                           mn=-Inf,mx=Inf,tries=10) {

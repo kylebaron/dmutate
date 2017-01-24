@@ -12,6 +12,11 @@ export R_LIBS=${LIBDIR}
 ec:
 	echo ${VERSION}
 
+cran: 
+	make doc
+	make build
+	R CMD CHECK --as-cran ${TARBALL} -o ${CHKDIR}
+
 all:
 	make doc
 	make build

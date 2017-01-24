@@ -1,3 +1,8 @@
+cran-comments.md
+README.Rmd
+.*[.]tar.gz$
+test.R
+docs
 ^.*\.Rproj$
 ^\.Rproj\.user$
 Makefile

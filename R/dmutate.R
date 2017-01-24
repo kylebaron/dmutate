@@ -110,15 +110,6 @@ bound <- function(call,n,envir=list(),mult=1.3,mn=-Inf,mx=Inf,tries=10) {
 ##' @export
 rbinomial <- function(n,p,...) rbinom(n,1,p)
 
-##' Simulate from log-normal distirbution.
-##'
-##' Wrapper around \code{\link{rnorm}}.
-##'
-##' @param ... passed to \code{\link{rnorm}}
-##'
-##'
-##' @export
-rlnorm <- function(...) exp(rnorm(...))
 
 ##' Simulate from multivariate normal distribution.
 ##'

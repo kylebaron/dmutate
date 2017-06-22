@@ -320,6 +320,7 @@ mvrnorm_bound <- function(call,n,envir=list(),mult=1.3,
   envir$.n <- ceiling(n*mult)
 
   if(all(mn==-Inf) & all(mx==Inf)) {
+    envir$.n <- n
     return(as.data.frame(eval(call,envir=envir)))
   }
 

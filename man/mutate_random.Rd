@@ -3,11 +3,11 @@
 \docType{methods}
 \name{mutate_random}
 \alias{mutate_random}
-\alias{mutate_random,data.frame,character-method}
-\alias{mutate_random,data.frame,covobj-method}
-\alias{mutate_random,data.frame,covset-method}
 \alias{mutate_random,data.frame,formula-method}
+\alias{mutate_random,data.frame,character-method}
 \alias{mutate_random,data.frame,list-method}
+\alias{mutate_random,data.frame,covset-method}
+\alias{mutate_random,data.frame,covobj-method}
 \title{Add random variates to a data frame.}
 \usage{
 mutate_random(data, input, ...)
@@ -50,4 +50,3 @@ egfr <- covset(EGFR[lower,upper] ~ rnorm(mu,sd))
 mutate_random(data,egfr,envir=e)
 
 }
-

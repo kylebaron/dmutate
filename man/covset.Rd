@@ -2,13 +2,14 @@
 % Please edit documentation in R/class_covset.R, R/dmutate.R
 \docType{methods}
 \name{covset}
-\alias{as.covset}
-\alias{as.list,covobj-method}
-\alias{as.list,covset-method}
 \alias{covset}
 \alias{new_covobj}
 \alias{print.covobj}
+\alias{as.list,covobj-method}
+\alias{as.list,covset-method}
 \alias{print.covset}
+\alias{covset}
+\alias{as.covset}
 \title{Covobj and covset objects.}
 \usage{
 new_covobj(x, envir = parent.frame(), ...)
@@ -55,4 +56,3 @@ set
 as.list(set)
 
 }
-

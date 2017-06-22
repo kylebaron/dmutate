@@ -19,4 +19,3 @@ Wrapper for \code{\link{rbinom}}  with trial size of 1.
 \details{
 The \code{size} of each trial is always 1.
 }
-

@@ -46,14 +46,29 @@ library(magrittr)
 #' #' Case 3
 #' test(obj, list(a=-1000,b=300))
 
-
-mu <- c(0,0)
-Sigma <- mrgsolve::dmat(1,1)
-x <- covset(A+B~rmvnorm(mu,Sigma)|ID)
-
+library(rbenchmark)
+mu <- c(0,0,0)
+Sigma <- mrgsolve::dmat(1,1,1)
+x <- covset(A+B+C~rmvnorm(mu,Sigma)|VPOP)
+y <- covset(A+B+C~rmvnorm(mu,Sigma)|ID)
+z <- covset(A+B+C~rmvnorm(mu,Sigma))
 idata <- data_frame(ID=1:1000)
-undebug(dmutate:::do_mutate)
-mutate_random(idata,x)
+vp <- readr::read_csv("~/git/metrumresearchgroup/devmodels/mapk/s10vpop.csv")
+
+
+all.equal(vp[,names(vp)],select_(vp,.dots=names(vp)))
+
+vp2 <- vp[,1:30]
+#undebug(dmutate:::do_mutate)
+ggplot(profr(mutate_random(vp,x)))
+mutate_random(idata,y)
+system.time(mutate_random(vp,x))
+system.time(mutate_random(vp2,x))
+system.time(mutate_random(vp,z))
+
+system.time(mutate_random(idata,y))
+
+benchmark(mutate_random(idata,x))
 
 
 

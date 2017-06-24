@@ -254,7 +254,7 @@ do_mutate <- function(data,x,envir=parent.frame(),tries=10,mult=1.5,...) {
     r <- data_frame(.x=bound(x$call,n=n,mn=mn, mx=mx,tries=tries,envir=envir))
   }
   names(r) <- x$vars
-  data <- data[,setdiff(names(data),names(r))]
+  data <- data[,setdiff(names(data),names(r)),drop=FALSE]
   if(has.by) {
     r <- bind_cols(skele,r)
     return(left_join(data,r,by=x$by))

@@ -66,10 +66,13 @@ setMethod("mutate_random", c("data.frame", "covobj"), function(data,input,envir=
 parse_left_var <- function(x) {
   m <- regexec("(\\w+)(\\[(\\w+)?\\,(\\w+)?\\])?", x)
   m <- unlist(regmatches(x,m))
-  var <- m[2]
+  if(length(m)==0) {
+    stop("invalid variable name on left hand side",call.=FALSE)
+  }
+  var    <- m[2]
   bounds <- m[3]
-  lower <- m[4]
-  upper <- m[5]
+  lower  <- m[4]
+  upper  <- m[5]
   if(lower=="") lower <- "-Inf"
   if(upper=="") upper <- "Inf"
   return(list(var=var,lower=lower,upper=upper))
@@ -153,6 +156,8 @@ rmvnorm <- function(n, mu, Sigma) {
 ##' @export
 rlmvnorm <- function(n,...) exp(rmvnorm(n,...))
 
+empty_covobj <- function() {}
+
 first_comma <- function(x,start=1) {
   open <- 0
   where <- NULL
@@ -181,7 +186,7 @@ parse_form_3 <- function(x,envir) {
   til <- where_first("~",x)
   bar <- where_first("|",x)
   left <- substr(x,0,til-1)
-
+  if(left=="") stop("variable name on left hand side not found",call.=FALSE)
 
   if(bar > 0) {
     right <- substr(x,til+1,bar-1)
@@ -192,6 +197,7 @@ parse_form_3 <- function(x,envir) {
   }
 
   op <- where_first("(",right)
+
   dist <- substr(right,0,op-1)
 
   if(substr(dist,0,1)=="r") {
@@ -216,6 +222,8 @@ do_mutate <- function(data,x,envir=parent.frame(),tries=10,mult=1.5,...) {
 
   data <- ungroup(data)
 
+  if(x$vars[1]=="NULL") return(data)
+
   if(missing(envir)) {
     envir <- x$envir
   }
@@ -231,7 +239,7 @@ do_mutate <- function(data,x,envir=parent.frame(),tries=10,mult=1.5,...) {
     return(data)
   }
 
-  if(tries <=0) stop("tries must be >= 1")
+  if(tries <= 0) stop("tries must be >= 1")
 
   x$by <- c(x$by,x$opts$by)
   x$by <- x$by[x$by != ""]

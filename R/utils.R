@@ -97,3 +97,4 @@ where_first <- function(what,x) {
   as.integer(unlist(regexpr(what,x,fixed=TRUE)))
 }
 
+mt <- function(.n=1) rep(0,.n)

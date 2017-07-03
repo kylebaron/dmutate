@@ -46,6 +46,11 @@ library(magrittr)
 #' #' Case 3
 #' test(obj, list(a=-1000,b=300))
 
+library(purrr)
+library(tidyr)
+
+
+
 library(rbenchmark)
 mu <- c(0,0,0)
 Sigma <- mrgsolve::dmat(1,1,1)

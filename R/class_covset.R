@@ -18,6 +18,7 @@ setClass("covset")
 ##' as.list(obj)
 ##'
 new_covobj <- function(x,envir = parent.frame(),...) {
+  if(x=="") return(new_covobj("NULL~rnorm()"))
   if(is.covobj(x)) {
     if(valid_covobj(x)) {
       return(x)
@@ -71,10 +72,7 @@ valid_covobj <- function(x,...) {
 }
 
 call_type <- function(x) {
-  if(x$dist =="expr") {
-    return(2)
-  }
-  return(1)
+  match(x$dist,c("expr"),nomatch=0) + 1
 }
 
 

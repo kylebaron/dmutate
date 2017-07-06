@@ -4,7 +4,7 @@ PACKAGE=dmutate
 VERSION=$(shell grep Version DESCRIPTION |awk '{print $$2}')
 TARBALL=${PACKAGE}_${VERSION}.tar.gz
 PKGDIR=.
-CHKDIR=.
+CHKDIR=Rchecks
 
 ## Set libPaths:
 export R_LIBS=${LIBDIR}
@@ -12,7 +12,7 @@ export R_LIBS=${LIBDIR}
 ec:
 	echo ${VERSION}
 
-cran: 
+cran:
 	make doc
 	make build
 	R CMD CHECK --as-cran ${TARBALL} -o ${CHKDIR}

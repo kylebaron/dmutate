@@ -22,19 +22,23 @@ setClass("covset")
 ##' mutate_random(data,egfr,envir=e)
 ##'
 ##' @export
-setGeneric("mutate_random", function(data,input,...) standardGeneric("mutate_random"))
+setGeneric("mutate_random", function(data,input,...) {
+  standardGeneric("mutate_random")
+})
 
 ##' @export
 ##' @rdname mutate_random
 ##'
-setMethod("mutate_random", c("data.frame","formula"), function(data,input,...) {
+setMethod("mutate_random", c("data.frame","formula"),
+          function(data,input,...) {
   x <- new_covobj(input,envir=environment(input))
   do_mutate(data,x=x,...)
 })
 
 ##' @export
 ##' @rdname mutate_random
-setMethod("mutate_random", c("data.frame", "character"), function(data,input,envir=parent.frame(),...) {
+setMethod("mutate_random", c("data.frame", "character"),
+          function(data,input,envir=parent.frame(),...) {
   input <- new_covobj(input,envir=envir)
   args <- input$args
   input$args <- NULL
@@ -44,19 +48,22 @@ setMethod("mutate_random", c("data.frame", "character"), function(data,input,env
 
 ##' @export
 ##' @rdname mutate_random
-setMethod("mutate_random", c("data.frame", "list"), function(data,input,...) {
+setMethod("mutate_random", c("data.frame", "list"),
+          function(data,input,...) {
   apply_covset(data,input,...)
 })
 
 ##' @export
 ##' @rdname mutate_random
-setMethod("mutate_random", c("data.frame", "covset"), function(data,input,...) {
+setMethod("mutate_random", c("data.frame", "covset"),
+          function(data,input,...) {
   apply_covset(data,input,...)
 })
 
 ##' @export
 ##' @rdname mutate_random
-setMethod("mutate_random", c("data.frame", "covobj"), function(data,input,envir=parent.frame(),...) {
+setMethod("mutate_random", c("data.frame", "covobj"),
+          function(data,input,envir=parent.frame(),...) {
   do_mutate(data,input,envir=envir,...)
 })
 
@@ -101,7 +108,8 @@ bound <- function(call,n,envir=list(),mult=1.3,mn=-Inf,mx=Inf,tries=10) {
     if(ngot >= n) break
   }
   if(ngot < n) {
-    stop("Could not simulate required variates within given bounds in ", tries, " tries", call.=FALSE)
+    stop("Could not simulate required variates within given bounds in ",
+         tries, " tries", call.=FALSE)
   }
   return(y[1:n])
 }
@@ -282,12 +290,19 @@ do_mutate <- function(data,x,envir=parent.frame(),tries=10,mult=1.5,...) {
 ##'
 ##' as.list(set)
 ##'
+##' @details
+##' \code{rvset} is an alias for \code{covset}.
+##'
 ##' @export
 covset <- function(...,envir=parent.frame()) {
   x <- list(...)
   x <- lapply(x,new_covobj,envir=envir)
   return(structure(x,class="covset"))
 }
+
+##' @rdname covset
+##' @export
+rvset <- function(...) covset(...)
 
 is.covset <- function(x) return(inherits(x,"covset"))
 

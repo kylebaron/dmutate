@@ -9,6 +9,7 @@
 \alias{as.list,covset-method}
 \alias{print.covset}
 \alias{covset}
+\alias{rvset}
 \alias{as.covset}
 \title{Covobj and covset objects.}
 \usage{
@@ -24,6 +25,8 @@ new_covobj(x, envir = parent.frame(), ...)
 
 covset(..., envir = parent.frame())
 
+rvset(...)
+
 as.covset(x)
 }
 \arguments{
@@ -37,6 +40,9 @@ as.covset(x)
 Covobj and covset objects.
 
 Create a set of covariates.
+}
+\details{
+\code{rvset} is an alias for \code{covset}.
 }
 \examples{
 

@@ -3,8 +3,4 @@ library(dplyr)
 
 library(magrittr)
 
-x <- "fo.o[1.1,2.3]"
-m <- regexec("([\\w.]+)(\\[(\\S+)?\\,(\\S+)?\\])?", x,perl=TRUE)
-m <- unlist(regmatches(x,m))
-m
-
+cov1 <- covset(Y~rnorm(0,1), Z ~ runif(2,3))

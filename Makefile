@@ -41,9 +41,7 @@ check:
 	make build
 	R CMD CHECK ${TARBALL} -o ${CHKDIR}
 
-push:
-	make all
-	git commit -am "make push"
-	git push -u origin master
-
+test:
+	make install
+	Rscript -e 'testthat:::test_dir("tests")'
 

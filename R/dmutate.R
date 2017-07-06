@@ -64,7 +64,7 @@ setMethod("mutate_random", c("data.frame", "covobj"), function(data,input,envir=
 })
 
 parse_left_var <- function(x) {
-  m <- regexec("(\\w+)(\\[(\\S+)?\\,(\\S+)?\\])?", x)
+  m <- regexec("([\\w.]+)(\\[(\\S+)?\\,(\\S+)?\\])?", x,perl=TRUE)
   m <- unlist(regmatches(x,m))
   if(length(m)==0) {
     stop("invalid variable name on left hand side",call.=FALSE)

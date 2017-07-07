@@ -7,7 +7,7 @@ PKGDIR=.
 CHKDIR=Rchecks
 
 ## Set libPaths:
-export R_LIBS=${LIBDIR}
+# export R_LIBS=${LIBDIR}
 
 ec:
 	echo ${VERSION}

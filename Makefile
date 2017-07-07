@@ -12,6 +12,9 @@ export R_LIBS=${LIBDIR}
 ec:
 	echo ${VERSION}
 
+travis:
+  make cran
+
 cran:
 	make doc
 	make build

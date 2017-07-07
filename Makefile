@@ -13,7 +13,8 @@ ec:
 	echo ${VERSION}
 
 travis:
-  make cran
+	make build
+	R CMD check ${TARBALL}
 
 cran:
 	make doc

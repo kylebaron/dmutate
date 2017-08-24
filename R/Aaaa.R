@@ -1,6 +1,7 @@
 
 ##' @importFrom dplyr left_join bind_cols data_frame select_ mutate_ ungroup group_by_
 ##' @importFrom stats rbinom rnorm setNames
+##' @importFrom MASS mvrnorm
 ##' @import methods
 NULL
 

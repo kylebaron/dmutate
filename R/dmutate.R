@@ -138,6 +138,9 @@ rbinomial <- function(n,p,...) rbinom(n,1,p)
 ##'
 ##' @details \code{rlmvnorm} is a multivariate log normal.
 ##'
+##' \code{rmassnorm} and \code{rlmassnorm} simulate the
+##' multivariate normal using the \code{MASS} package.
+##'
 ##' @return Returns a matrix of variates with number of rows
 ##' equal to \code{n} and mumber of columns equal to length of \code{mu}.
 ##'
@@ -160,6 +163,14 @@ rmvnorm <- function(n, mu, Sigma) {
 ##' @param ... arguments passed to \code{rmvnorm}
 ##' @export
 rlmvnorm <- function(n,...) exp(rmvnorm(n,...))
+
+##' @rdname rmvnorm
+##' @export
+rmassnorm <- function(n,...) MASS::mvrnorm(n,...)
+
+##' @rdname rmvnorm
+##' @export
+rlmassnorm <- function(n,...) exp(MASS::mvrnorm(n,...))
 
 empty_covobj <- function() {}
 
@@ -261,7 +272,7 @@ do_mutate <- function(data,x,envir=parent.frame(),tries=10,mult=1.5,...) {
   mn <- eval(x$lower,envir=envir)
   mx <- eval(x$upper,envir=envir)
 
-  if(x$dist %in% c("rmvnorm", "rlmvnorm")) {
+  if(x$dist %in% c("rmvnorm", "rlmvnorm", "rmassnorm", "rlmassnorm")) {
     r <- mvrnorm_bound(x$call,n=n,mn=mn,mx=mx,tries=tries,envir=envir)
   } else {
     r <- data_frame(.x=bound(x$call,n=n,mn=mn, mx=mx,tries=tries,envir=envir))

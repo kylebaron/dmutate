@@ -3,11 +3,17 @@
 \name{rmvnorm}
 \alias{rmvnorm}
 \alias{rlmvnorm}
+\alias{rmassnorm}
+\alias{rlmassnorm}
 \title{Simulate from multivariate normal distribution.}
 \usage{
 rmvnorm(n, mu, Sigma)
 
 rlmvnorm(n, ...)
+
+rmassnorm(n, ...)
+
+rlmassnorm(n, ...)
 }
 \arguments{
 \item{n}{number of variates}
@@ -28,4 +34,7 @@ Simulate from multivariate normal distribution.
 }
 \details{
 \code{rlmvnorm} is a multivariate log normal.
+
+\code{rmassnorm} and \code{rlmassnorm} simulate the
+multivariate normal using the \code{MASS} package.
 }

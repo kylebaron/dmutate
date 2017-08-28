@@ -1,7 +1,7 @@
 Package: dmutate
 Type: Package
 Title: Mutate Data Frames with Random Variates
-Version: 0.1.2.9000
+Version: 0.1.2.9001
 Imports: dplyr (>= 0.5.0), MASS
 Depends: methods
 Suggests: testthat

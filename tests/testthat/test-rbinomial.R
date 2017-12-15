@@ -3,19 +3,13 @@ library(dmutate)
 library(dplyr)
 Sys.setenv(R_TESTS="")
 
+context("test-as_idata")
 
-context("test-rbinomial")
-
-test_that("binomial variate is correctly generated", {
+test_that("generate idata set from covset", {
   set.seed(1010121)
-  idata <- data_frame(ID=1:5000)
-  out <- mutate_random(idata, Y~rbinomial(0.78))
+  out <- as_idata(covset(Y~rbinomial(0.78)),100000)
   y <- round(mean(out$Y),2)
   expect_true(y %in% c(0.77,0.78,0.79))
-
-  out <- mutate_random(idata, Y~rbinomial(0.24))
-  y <- round(mean(out$Y),2)
-  expect_true(y %in% c(0.23,0.24,0.25))
 })
 
 

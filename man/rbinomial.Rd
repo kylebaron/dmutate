@@ -2,9 +2,12 @@
 % Please edit documentation in R/dmutate.R
 \name{rbinomial}
 \alias{rbinomial}
+\alias{rbern}
 \title{Simulate from binomial distribution.}
 \usage{
 rbinomial(n, p, ...)
+
+rbern(n, p, ...)
 }
 \arguments{
 \item{n}{number of variates}

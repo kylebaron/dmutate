@@ -128,6 +128,9 @@ bound <- function(call,n,envir=list(),mult=1.3,mn=-Inf,mx=Inf,tries=10) {
 ##'
 ##' @export
 rbinomial <- function(n,p,...) rbinom(n,1,p)
+##' @rdname rbinomial
+##' @export
+rbern <- rbinomial
 
 ##' Simulate from multivariate normal distribution.
 ##'

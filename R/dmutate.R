@@ -240,6 +240,14 @@ parse_form_3 <- function(x,envir) {
 ##'
 ##' @param data a data frame
 ##' @param ... formulae and other arguments for \code{\link{mutate_random}}
+##'
+##' @examples
+##'
+##' idata <- dplyr::data_frame(ID = 1:10)
+##'
+##' dmutate(idata, y ~ rbinomial(0.5), wt ~ rnorm(mu,sd),
+##'         envir = list(mu = 50, sd = 20))
+##'
 ##' @export
 dmutate <- function(data, ...) {
   args <- list(...)

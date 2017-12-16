@@ -17,3 +17,11 @@ mutate a data frame, adding random variables.
 
 Apply formulae to a data frame
 }
+\examples{
+
+idata <- dplyr::data_frame(ID = 1:10)
+
+dmutate(idata, y ~ rbinomial(0.5), wt ~ rnorm(mu,sd),
+        envir = list(mu = 50, sd = 20))
+
+}

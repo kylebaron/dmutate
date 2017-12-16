@@ -128,6 +128,9 @@ bound <- function(call,n,envir=list(),mult=1.3,mn=-Inf,mx=Inf,tries=10) {
 ##'
 ##' @export
 rbinomial <- function(n,p,...) rbinom(n,1,p)
+##' @rdname rbinomial
+##' @export
+rbern <- rbinomial
 
 ##' Simulate from multivariate normal distribution.
 ##'
@@ -230,6 +233,29 @@ parse_form_3 <- function(x,envir) {
   right <- parse(text=right)
   left <- parse_left(left)
   c(left,list(call=right,by=group,dist=dist))
+}
+
+
+##' Apply formulae to a data frame
+##'
+##' @param data a data frame
+##' @param ... formulae and other arguments for \code{\link{mutate_random}}
+##'
+##' @examples
+##'
+##' idata <- dplyr::data_frame(ID = 1:10)
+##'
+##' dmutate(idata, y ~ rbinomial(0.5), wt ~ rnorm(mu,sd),
+##'         envir = list(mu = 50, sd = 20))
+##'
+##' @export
+dmutate <- function(data, ...) {
+  args <- list(...)
+  fm <- sapply(args,class)=="formula"
+  pass <- args[!fm]
+  args$envir <- NULL
+  .cov <- do.call(covset, args)
+  do.call(mutate_random, c(list(data = data, input = .cov), pass))
 }
 
 # @param data a data frame

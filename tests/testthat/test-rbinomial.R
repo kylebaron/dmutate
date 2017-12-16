@@ -18,4 +18,3 @@ test_that("binomial variate is correctly generated", {
   expect_true(y %in% c(0.23,0.24,0.25))
 })
 
-

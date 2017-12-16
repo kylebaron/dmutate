@@ -235,6 +235,21 @@ parse_form_3 <- function(x,envir) {
   c(left,list(call=right,by=group,dist=dist))
 }
 
+
+##' Apply formulae to a data frame
+##'
+##' @param data a data frame
+##' @param ... formulae and other arguments for \code{\link{mutate_random}}
+##' @export
+dmutate <- function(data, ...) {
+  args <- list(...)
+  fm <- sapply(args,class)=="formula"
+  pass <- args[!fm]
+  args$envir <- NULL
+  .cov <- do.call(covset, args)
+  do.call(mutate_random, c(list(data = data, input = .cov), pass))
+}
+
 # @param data a data frame
 # @param x a covobj
 do_mutate <- function(data,x,envir=parent.frame(),tries=10,mult=1.5,...) {

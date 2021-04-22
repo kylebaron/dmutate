@@ -2,7 +2,6 @@
 % Please edit documentation in R/Aaaa.R, R/dmutate.R
 \name{dmutate}
 \alias{dmutate}
-\alias{dmutate}
 \title{mutate a data frame, adding random variables.}
 \usage{
 dmutate(data, ...)

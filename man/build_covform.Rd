@@ -5,11 +5,25 @@
 \alias{build_covobj}
 \title{Build a object or formula to use with covset.}
 \usage{
-build_covform(var, dist, args, lower = NULL, upper = NULL, by = NULL,
-  envir = parent.frame())
+build_covform(
+  var,
+  dist,
+  args,
+  lower = NULL,
+  upper = NULL,
+  by = NULL,
+  envir = parent.frame()
+)
 
-build_covobj(var, dist, args, upper = NULL, lower = NULL, by = NULL,
-  envir = parent.frame())
+build_covobj(
+  var,
+  dist,
+  args,
+  upper = NULL,
+  lower = NULL,
+  by = NULL,
+  envir = parent.frame()
+)
 }
 \arguments{
 \item{var}{variable name, character}

@@ -3,6 +3,7 @@
 - Change email address
 - Remove LazyData from DESCRIPTION
 - Add UTF-8 encoding to DESCRIPTION
+- Update github urls
 
 # 0.1.1.9000
 - Fixed a bug with rmvnorm and rlmvnorm where an incorrect number of variates were 

@@ -1,7 +1,8 @@
 
-##' @importFrom dplyr left_join bind_cols data_frame select_ mutate_ ungroup group_by_
+##' @importFrom dplyr left_join bind_cols data_frame ungroup
 ##' @importFrom stats rbinom rnorm setNames
 ##' @importFrom MASS mvrnorm
+##' @importFrom rlang `:=`
 ##' @import methods
 NULL
 

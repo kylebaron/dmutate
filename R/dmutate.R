@@ -271,7 +271,7 @@ do_mutate <- function(data,x,envir=parent.frame(),tries=10,mult=1.5,...) {
   }
 
   if(call_type(x)==2) {
-    .expr <- eval(parse(text=as.character(x$call)),envir=envir)
+    .expr <- with(data, eval(parse(text=as.character(x$call)),envir=envir))
     .var_name <- x$vars
     if(x$by != "") {
       data <- dplyr::group_by(data, dplyr::across(dplyr::all_of(x$by)))

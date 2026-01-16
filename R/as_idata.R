@@ -2,13 +2,15 @@
 
 ##' Create individual data frame from a covset object
 ##'
-##' @param .covset a covset object
-##' @param .n number of IDs to simulate
+##' @param .covset a covset object.
+##' @param .n number of IDs to simulate.
 ##'
 ##' @examples
 ##' cov1 <- covset(Y ~ rbinomial(0.2), Z ~ rnorm(2,2))
 ##'
 ##' as_idata(cov1, 10)
+##'
+##' @return An idata set data frame.
 ##'
 ##' @export
 as_idata <- function(.covset, .n) {

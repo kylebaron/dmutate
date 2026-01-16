@@ -7,7 +7,7 @@
 \alias{mutate_random,data.frame,list-method}
 \alias{mutate_random,data.frame,covset-method}
 \alias{mutate_random,data.frame,covobj-method}
-\title{Add random variates to a data frame.}
+\title{Add random variates to a data frame}
 \usage{
 mutate_random(data, input, ...)
 
@@ -22,16 +22,16 @@ mutate_random(data, input, ...)
 \S4method{mutate_random}{data.frame,covobj}(data, input, envir = parent.frame(), ...)
 }
 \arguments{
-\item{data}{the data.frame to mutate}
+\item{data}{the data.frame to mutate.}
 
-\item{input}{an unquoted R formula; see details}
+\item{input}{an unquoted R formula; see details.}
 
-\item{...}{additional inputs}
+\item{...}{additional inputs.}
 
-\item{envir}{environment for object lookup}
+\item{envir}{environment for object lookup.}
 }
 \description{
-Add random variates to a data frame.
+Add random variates to a data frame
 }
 \examples{
 

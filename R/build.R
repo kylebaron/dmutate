@@ -43,25 +43,25 @@ fill_limit <- function(var,limit=NULL,def = "") {
   limit[var]
 }
 
-##' Build a object or formula to use with covset.
+##' Build a object or formula to use with covset
 ##'
-##' \code{build_covform} formulates then parses a formula that
-##' can be used in a covset. \code{build_covobj} just assembles
+##' `build_covform` formulates then parses a formula that
+##' can be used in a covset. `build_covobj` just assembles
 ##' the object directly.
 ##'
-##' @param var variable name, character
-##' @param dist distribution function name
-##' @param args character vector of arguments for \code{dist}
-##' @param lower lower limits for var
-##' @param upper upper limits for var
-##' @param by grouping variable
-##' @param envir environment for resolving symbols in expressions
+##' @param var variable name, character.
+##' @param dist distribution function name.
+##' @param args character vector of arguments for `dist`.
+##' @param lower lower limits for `var`.
+##' @param upper upper limits for `var`.
+##' @param by grouping variable.
+##' @param envir environment for resolving symbols in expressions.
 ##'
 ##' @details
-##' When length of \code{var} is greater than one,
-##' both \code{lower} and \code{upper} must be named vectors when specifiation is
+##' When length of `var` is greater than one,
+##' both `lower` and `upper` must be named vectors when specification is
 ##' made.  However, it is acceptable to specify nothing or to use unnamed limits
-##' when the lenght of var is 1.
+##' when the length of var is 1.
 ##'
 ##' @examples
 ##'
@@ -69,6 +69,8 @@ fill_limit <- function(var,limit=NULL,def = "") {
 ##' build_covform("WT", "rnorm", "80,40", lower = 40, upper = 140)
 ##'
 ##' build_covobj("WT", "rnorm", "80,40", lower = 40, upper = 140)
+##'
+##' @return A `covobj` object.
 ##'
 ##' @export
 build_covform <- function(var, dist, args,  lower = NULL, upper = NULL,

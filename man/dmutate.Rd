@@ -7,9 +7,9 @@
 dmutate(data, ...)
 }
 \arguments{
-\item{data}{a data frame}
+\item{data}{a data frame.}
 
-\item{...}{formulae and other arguments for \code{\link{mutate_random}}}
+\item{...}{formulae and other arguments for \code{\link[=mutate_random]{mutate_random()}}.}
 }
 \description{
 mutate a data frame, adding random variables.

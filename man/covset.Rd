@@ -9,7 +9,7 @@
 \alias{print.covset}
 \alias{rvset}
 \alias{as.covset}
-\title{Covobj and covset objects.}
+\title{Covobj and covset objects}
 \usage{
 new_covobj(x, envir = parent.frame(), ...)
 
@@ -28,16 +28,16 @@ rvset(...)
 as.covset(x)
 }
 \arguments{
-\item{x}{a formula; may be quoted}
+\item{x}{a formula; may be quoted.}
 
 \item{envir}{for formulae}
 
-\item{...}{formulae to use for the covset}
+\item{...}{formulae to use for the covset.}
 }
 \description{
-Covobj and covset objects.
+Covobj and covset objects
 
-Create a set of covariates.
+Create a set of covariates
 }
 \details{
 \code{rvset} is an alias for \code{covset}.

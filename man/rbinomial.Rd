@@ -3,21 +3,21 @@
 \name{rbinomial}
 \alias{rbinomial}
 \alias{rbern}
-\title{Simulate from binomial distribution.}
+\title{Simulate from binomial distribution}
 \usage{
 rbinomial(n, p, ...)
 
 rbern(n, p, ...)
 }
 \arguments{
-\item{n}{number of variates}
+\item{n}{number of variates.}
 
-\item{p}{probability of success}
+\item{p}{probability of success.}
 
-\item{...}{passed along as appropriate}
+\item{...}{passed along as appropriate.}
 }
 \description{
-Wrapper for \code{\link{rbinom}}  with trial size of 1.
+Wrapper for \code{\link[stats:Binomial]{stats::rbinom()}} with trial size of 1.
 }
 \details{
 The \code{size} of each trial is always 1.

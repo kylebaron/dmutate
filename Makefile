@@ -37,3 +37,9 @@ test:
 	make install
 	Rscript -e 'testthat:::test_dir("tests")'
 
+spelling:
+	Rscript -e "spelling::spell_check_package('.')"
+
+readme:
+	Rscript -e "rmarkdown::render('README.Rmd')"
+

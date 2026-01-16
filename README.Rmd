@@ -34,7 +34,7 @@ data.frame(ID=1:10) %>%
   mutate_random(WT[low_wt,high_wt] ~ rnorm(mu_wt,sd))
 ```
 
-We can simulate from any probability distirbution in `R`
+We can simulate from any probability distribution in `R`
 ```{r,message=FALSE}
 data.frame(ID=1:10) %>% mutate_random(X ~ rcauchy(0,0.5))
 ```
@@ -62,7 +62,7 @@ Simulate
 ```{r}
 data.frame(ID=1:10000) %>%
   mutate_random(XY) %>% 
-  summary
+  summary()
 ```
 
 
@@ -75,16 +75,16 @@ data.frame(ID=1:10) %>%
   mutate_random(STUDY_RE ~ rnorm(0,sqrt(50))|GROUP) %>%
   mutate_random(SEX ~ rbinomial(p.female)) %>%
   mutate_random(sigma ~ rgamma(1,1)) %>%
-  mutate_random(kappa ~ rgamma(1,1)|GROUP) %>% signif(3)
-
+  mutate_random(kappa ~ rgamma(1,1)|GROUP) %>% 
+  signif(3)
 ```
 
 
 # Create formulae with `expr` to calculate new columns in the `data.frame` using `dplyr::mutate`
 
-We can easily save formulae to `R` variables.  We collect formulae together into sets called `covset`.  For better control for 
-where objects are found, we can specify an environment where objects can be found.
-
+We can easily save formulae to `R` variables.  We collect formulae together into 
+sets called `covset`.  For better control for where objects are found, we can 
+specify an environment where objects can be found.
 
 
 ```{r}
@@ -95,16 +95,12 @@ cov1 <- covset(a,b,d)
 e <- list(c=3)
 ```
 
-Notice that `b` has function `expr`.  This assigns the column named `Y` (in this case) to the result of evaluating the 
-expression in the data frame using `dplyr::dmutate`.
+Notice that `b` has function `expr`.  This assigns the column named `Y` (in 
+this case) to the result of evaluating the expression in the data frame using
+`dplyr::dmutate`.
 
 ```{r}
 .data <- data.frame(ID=1:3)
 
-mutate_random(.data,cov1,envir=e) %>% signif(3)
+mutate_random(.data, cov1, envir = e) %>% signif(3)
 ```
-
-
-
-
-

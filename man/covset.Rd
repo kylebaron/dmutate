@@ -30,7 +30,7 @@ as.covset(x)
 \arguments{
 \item{x}{a formula; may be quoted.}
 
-\item{envir}{for formulae}
+\item{envir}{for formulae.}
 
 \item{...}{formulae to use for the covset.}
 }

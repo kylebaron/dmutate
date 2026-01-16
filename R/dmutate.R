@@ -145,7 +145,7 @@ rbern <- rbinomial
 ##' multivariate normal using the `MASS` package.
 ##'
 ##' @return Returns a matrix of variates with number of rows
-##' equal to `n` and number of columns equal to length of `mu.
+##' equal to `n` and number of columns equal to length of `mu`.
 ##'
 ##' @export
 rmvnorm <- function(n, mu, Sigma) {
@@ -315,7 +315,7 @@ do_mutate <- function(data,x,envir=parent.frame(),tries=10,mult=1.5,...) {
 ##' Create a set of covariates
 ##'
 ##' @param ... formulae to use for the covset.
-##' @param envir for formulae
+##' @param envir for formulae.
 ##'
 ##' @examples
 ##' a <- Y ~ runif(0,1)
@@ -328,7 +328,7 @@ do_mutate <- function(data,x,envir=parent.frame(),tries=10,mult=1.5,...) {
 ##' as.list(set)
 ##'
 ##' @details
-##' \code{rvset} is an alias for \code{covset}.
+##' `rvset` is an alias for `covset`.
 ##'
 ##' @export
 covset <- function(...,envir=parent.frame()) {

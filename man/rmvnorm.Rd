@@ -27,7 +27,7 @@ length of \code{mu}.}
 }
 \value{
 Returns a matrix of variates with number of rows
-equal to \code{n} and number of columns equal to length of `mu.
+equal to \code{n} and number of columns equal to length of \code{mu}.
 }
 \description{
 Simulate from multivariate normal distribution

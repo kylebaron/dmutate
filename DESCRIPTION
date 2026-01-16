@@ -6,7 +6,7 @@ Imports: dplyr (>= 0.7.4), MASS, rlang, tibble
 Depends: methods
 Suggests: testthat
 Authors@R: c(
-    person("Kyle T", "Baron", "", "kyleb@metrumrg.com", c("aut", "cre", "cph"))
+    person("Kyle T", "Baron", "", "kylebtwin@imap.cc", c("aut", "cre", "cph"))
     )
 Maintainer: Kyle T Baron <kylebtwin@imap.cc>
 Description: Work within the 'dplyr' workflow to add random variates to your data frame. 

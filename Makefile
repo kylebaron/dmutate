@@ -1,20 +1,9 @@
 SHELL := /bin/bash
-LIBDIR=/Users/kyleb/Rlibs/lib
 PACKAGE=dmutate
 VERSION=$(shell grep Version DESCRIPTION |awk '{print $$2}')
 TARBALL=${PACKAGE}_${VERSION}.tar.gz
 PKGDIR=.
 CHKDIR=Rchecks
-
-## Set libPaths:
-# export R_LIBS=${LIBDIR}
-
-ec:
-	echo ${VERSION}
-
-travis:
-	make build
-	R CMD check ${TARBALL}
 
 cran:
 	make doc
@@ -33,7 +22,6 @@ doc:
 build:
 	R CMD build --md5 $(PKGDIR)
 
-
 install:
 	R CMD INSTALL --install-tests ${TARBALL}
 
@@ -48,4 +36,10 @@ check:
 test:
 	make install
 	Rscript -e 'testthat:::test_dir("tests")'
+
+spelling:
+	Rscript -e "spelling::spell_check_package('.')"
+
+readme:
+	Rscript -e "rmarkdown::render('README.Rmd')"
 

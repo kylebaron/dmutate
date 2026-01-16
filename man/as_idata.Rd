@@ -7,9 +7,12 @@
 as_idata(.covset, .n)
 }
 \arguments{
-\item{.covset}{a covset object}
+\item{.covset}{a covset object.}
 
-\item{.n}{number of IDs to simulate}
+\item{.n}{number of IDs to simulate.}
+}
+\value{
+An idata set data frame.
 }
 \description{
 Create individual data frame from a covset object

@@ -2,9 +2,9 @@
 setClass("covobj")
 setClass("covset")
 
-##' Covobj and covset objects.
+##' Covobj and covset objects
 ##'
-##' @param x a formula; may be quoted
+##' @param x a formula; may be quoted.
 ##' @rdname covset
 ##' @name covset
 ##' @export

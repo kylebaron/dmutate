@@ -5,7 +5,7 @@
 \alias{rlmvnorm}
 \alias{rmassnorm}
 \alias{rlmassnorm}
-\title{Simulate from multivariate normal distribution.}
+\title{Simulate from multivariate normal distribution}
 \usage{
 rmvnorm(n, mu, Sigma)
 
@@ -16,21 +16,21 @@ rmassnorm(n, ...)
 rlmassnorm(n, ...)
 }
 \arguments{
-\item{n}{number of variates}
+\item{n}{number of variates.}
 
-\item{mu}{vector of means}
+\item{mu}{vector of means.}
 
 \item{Sigma}{variance-covariance matrix with number of columns equal to
-length of \code{mu}}
+length of \code{mu}.}
 
-\item{...}{arguments passed to \code{rmvnorm}}
+\item{...}{arguments passed to \code{rmvnorm}.}
 }
 \value{
 Returns a matrix of variates with number of rows
-equal to \code{n} and mumber of columns equal to length of \code{mu}.
+equal to \code{n} and number of columns equal to length of \code{mu}.
 }
 \description{
-Simulate from multivariate normal distribution.
+Simulate from multivariate normal distribution
 }
 \details{
 \code{rlmvnorm} is a multivariate log normal.

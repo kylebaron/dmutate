@@ -1,12 +1,12 @@
 
 setClass("covset")
 
-##' Add random variates to a data frame.
+##' Add random variates to a data frame
 ##'
-##' @param data the data.frame to mutate
-##' @param input an unquoted R formula; see details
-##' @param envir environment for object lookup
-##' @param ... additional inputs
+##' @param data the data.frame to mutate.
+##' @param input an unquoted R formula; see details.
+##' @param envir environment for object lookup.
+##' @param ... additional inputs.
 ##'
 ##' @examples
 ##'
@@ -115,16 +115,16 @@ bound <- function(call,n,envir=list(),mult=1.3,mn=-Inf,mx=Inf,tries=10) {
 }
 
 
-##' Simulate from binomial distribution.
+##' Simulate from binomial distribution
 ##'
-##' Wrapper for \code{\link{rbinom}}  with trial size of 1.
+##' Wrapper for [stats::rbinom()] with trial size of 1.
 ##'
-##' @param n number of variates
-##' @param p probability of success
-##' @param ... passed along as appropriate
+##' @param n number of variates.
+##' @param p probability of success.
+##' @param ... passed along as appropriate.
 ##'
 ##' @details
-##' The \code{size} of each trial is always 1.
+##' The `size` of each trial is always 1.
 ##'
 ##' @export
 rbinomial <- function(n,p,...) rbinom(n,1,p)
@@ -132,20 +132,20 @@ rbinomial <- function(n,p,...) rbinom(n,1,p)
 ##' @export
 rbern <- rbinomial
 
-##' Simulate from multivariate normal distribution.
+##' Simulate from multivariate normal distribution
 ##'
-##' @param n number of variates
-##' @param mu vector of means
+##' @param n number of variates.
+##' @param mu vector of means.
 ##' @param Sigma variance-covariance matrix with number of columns equal to
-##' length of \code{mu}
+##' length of `mu`.
 ##'
-##' @details \code{rlmvnorm} is a multivariate log normal.
+##' @details `rlmvnorm` is a multivariate log normal.
 ##'
-##' \code{rmassnorm} and \code{rlmassnorm} simulate the
-##' multivariate normal using the \code{MASS} package.
+##' `rmassnorm` and `rlmassnorm` simulate the
+##' multivariate normal using the `MASS` package.
 ##'
 ##' @return Returns a matrix of variates with number of rows
-##' equal to \code{n} and mumber of columns equal to length of \code{mu}.
+##' equal to `n` and number of columns equal to length of `mu`.
 ##'
 ##' @export
 rmvnorm <- function(n, mu, Sigma) {
@@ -163,7 +163,7 @@ rmvnorm <- function(n, mu, Sigma) {
   mu + matrix(rnorm(n * ncols), ncol = ncols) %*% chol(Sigma)
 }
 ##' @rdname rmvnorm
-##' @param ... arguments passed to \code{rmvnorm}
+##' @param ... arguments passed to `rmvnorm`.
 ##' @export
 rlmvnorm <- function(n,...) exp(rmvnorm(n,...))
 
@@ -238,12 +238,12 @@ parse_form_3 <- function(x,envir) {
 
 ##' Apply formulae to a data frame
 ##'
-##' @param data a data frame
-##' @param ... formulae and other arguments for \code{\link{mutate_random}}
+##' @param data a data frame.
+##' @param ... formulae and other arguments for [mutate_random()].
 ##'
 ##' @examples
 ##'
-##' idata <- dplyr::data_frame(ID = 1:10)
+##' idata <- data.frame(ID = 1:10)
 ##'
 ##' dmutate(idata, y ~ rbinomial(0.5), wt ~ rnorm(mu,sd),
 ##'         envir = list(mu = 50, sd = 20))
@@ -271,7 +271,7 @@ do_mutate <- function(data,x,envir=parent.frame(),tries=10,mult=1.5,...) {
   }
 
   if(call_type(x)==2) {
-    .expr <- eval(parse(text=as.character(x$call)),envir=envir)
+    .expr <- with(data, eval(parse(text=as.character(x$call)),envir=envir))
     .var_name <- x$vars
     if(x$by != "") {
       data <- dplyr::group_by(data, dplyr::across(dplyr::all_of(x$by)))
@@ -300,7 +300,7 @@ do_mutate <- function(data,x,envir=parent.frame(),tries=10,mult=1.5,...) {
   if(x$dist %in% c("rmvnorm", "rlmvnorm", "rmassnorm", "rlmassnorm")) {
     r <- mvrnorm_bound(x$call,n=n,mn=mn,mx=mx,tries=tries,envir=envir)
   } else {
-    r <- data_frame(.x=bound(x$call,n=n,mn=mn, mx=mx,tries=tries,envir=envir))
+    r <- tibble(.x=bound(x$call,n=n,mn=mn, mx=mx,tries=tries,envir=envir))
   }
   names(r) <- x$vars
   data <- data[,setdiff(names(data),names(r)),drop=FALSE]
@@ -312,9 +312,10 @@ do_mutate <- function(data,x,envir=parent.frame(),tries=10,mult=1.5,...) {
   }
 }
 
-##' Create a set of covariates.
-##' @param ... formulae to use for the covset
-##' @param envir for formulae
+##' Create a set of covariates
+##'
+##' @param ... formulae to use for the covset.
+##' @param envir for formulae.
 ##'
 ##' @examples
 ##' a <- Y ~ runif(0,1)
@@ -327,7 +328,7 @@ do_mutate <- function(data,x,envir=parent.frame(),tries=10,mult=1.5,...) {
 ##' as.list(set)
 ##'
 ##' @details
-##' \code{rvset} is an alias for \code{covset}.
+##' `rvset` is an alias for `covset`.
 ##'
 ##' @export
 covset <- function(...,envir=parent.frame()) {
@@ -403,6 +404,3 @@ mvrnorm_bound <- function(call,n,envir=list(),mult=1.3,
   }
   return(out)
 }
-
-
-

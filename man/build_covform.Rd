@@ -3,28 +3,45 @@
 \name{build_covform}
 \alias{build_covform}
 \alias{build_covobj}
-\title{Build a object or formula to use with covset.}
+\title{Build a object or formula to use with covset}
 \usage{
-build_covform(var, dist, args, lower = NULL, upper = NULL, by = NULL,
-  envir = parent.frame())
+build_covform(
+  var,
+  dist,
+  args,
+  lower = NULL,
+  upper = NULL,
+  by = NULL,
+  envir = parent.frame()
+)
 
-build_covobj(var, dist, args, upper = NULL, lower = NULL, by = NULL,
-  envir = parent.frame())
+build_covobj(
+  var,
+  dist,
+  args,
+  upper = NULL,
+  lower = NULL,
+  by = NULL,
+  envir = parent.frame()
+)
 }
 \arguments{
-\item{var}{variable name, character}
+\item{var}{variable name, character.}
 
-\item{dist}{distribution function name}
+\item{dist}{distribution function name.}
 
-\item{args}{character vector of arguments for \code{dist}}
+\item{args}{character vector of arguments for \code{dist}.}
 
-\item{lower}{lower limits for var}
+\item{lower}{lower limits for \code{var}.}
 
-\item{upper}{upper limits for var}
+\item{upper}{upper limits for \code{var}.}
 
-\item{by}{grouping variable}
+\item{by}{grouping variable.}
 
-\item{envir}{environment for resolving symbols in expressions}
+\item{envir}{environment for resolving symbols in expressions.}
+}
+\value{
+A \code{covobj} object.
 }
 \description{
 \code{build_covform} formulates then parses a formula that
@@ -33,9 +50,9 @@ the object directly.
 }
 \details{
 When length of \code{var} is greater than one,
-both \code{lower} and \code{upper} must be named vectors when specifiation is
+both \code{lower} and \code{upper} must be named vectors when specification is
 made.  However, it is acceptable to specify nothing or to use unnamed limits
-when the lenght of var is 1.
+when the length of var is 1.
 }
 \examples{
 

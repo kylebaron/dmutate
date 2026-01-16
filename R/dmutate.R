@@ -271,13 +271,12 @@ do_mutate <- function(data,x,envir=parent.frame(),tries=10,mult=1.5,...) {
   }
 
   if(call_type(x)==2) {
-    .dots <- paste0("list(~",x$call,")")
-    .dots <- eval(parse(text=.dots),envir=envir)
-    names(.dots) <- x$vars
+    .expr <- eval(parse(text=as.character(x$call)),envir=envir)
+    .var_name <- x$vars
     if(x$by != "") {
-      data <- group_by_(data,.dots=x$by)
+      data <- dplyr::group_by(data, dplyr::across(dplyr::all_of(x$by)))
     }
-    data <- ungroup(mutate_(data, .dots=.dots))
+    data <- ungroup(dplyr::mutate(data, !!.var_name := .expr))
     return(data)
   }
 
@@ -289,7 +288,7 @@ do_mutate <- function(data,x,envir=parent.frame(),tries=10,mult=1.5,...) {
   has.by <- any(nchar(x$by) > 0)
 
   if(has.by) {
-    skele <- dplyr::distinct_(data,.dots=x$by)
+    skele <- dplyr::distinct(data, dplyr::across(dplyr::all_of(x$by)))
     n <- nrow(skele)
   } else {
     n <- nrow(data)

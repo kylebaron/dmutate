@@ -1,6 +1,3 @@
-
-
-
 library(testthat)
 library(dmutate)
 library(dplyr)
@@ -9,7 +6,7 @@ Sys.setenv(R_TESTS="")
 context("test-dmutate")
 
 cov1 <- covset(y ~ rbinomial(0.2), wt[30,70] ~ rnorm(mu,30), flag ~ expr(10))
-idata <- data_frame(ID = 1:10)
+idata <- tibble(ID = 1:10)
 En <- list(mu = 50)
 
 test_that("dmutate", {
@@ -19,7 +16,7 @@ test_that("dmutate", {
   out2 <- dmutate(idata,
                   y ~ rbinomial(0.2), wt[30,70] ~ rnorm(mu,30), flag ~ expr(10),
                   envir = En)
-  identical(out1,out2)
+  expect_identical(out1,out2)
 })
 
 

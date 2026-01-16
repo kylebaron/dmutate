@@ -14,5 +14,5 @@
 ##'
 ##' @export
 as_idata <- function(.covset, .n) {
-  mutate_random(data_frame(ID = seq_len(.n)), .covset)
+  mutate_random(tibble(ID = seq_len(.n)), .covset)
 }

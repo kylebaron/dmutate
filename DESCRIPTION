@@ -15,5 +15,5 @@ Description: Work within the 'dplyr' workflow to add random variates to your dat
 URL: https://github.com/kylebmetrum/dmutate
 BugReports: https://github.com/kylebmetrum/dmutate/issues
 License: GPL (>= 2)
-LazyData: TRUE
+Roxygen: list(markdown = TRUE)
 RoxygenNote: 7.3.3

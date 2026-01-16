@@ -1,12 +1,12 @@
 
 setClass("covset")
 
-##' Add random variates to a data frame.
+##' Add random variates to a data frame
 ##'
-##' @param data the data.frame to mutate
-##' @param input an unquoted R formula; see details
-##' @param envir environment for object lookup
-##' @param ... additional inputs
+##' @param data the data.frame to mutate.
+##' @param input an unquoted R formula; see details.
+##' @param envir environment for object lookup.
+##' @param ... additional inputs.
 ##'
 ##' @examples
 ##'
@@ -115,13 +115,13 @@ bound <- function(call,n,envir=list(),mult=1.3,mn=-Inf,mx=Inf,tries=10) {
 }
 
 
-##' Simulate from binomial distribution.
+##' Simulate from binomial distribution
 ##'
 ##' Wrapper for \code{\link{rbinom}}  with trial size of 1.
 ##'
-##' @param n number of variates
-##' @param p probability of success
-##' @param ... passed along as appropriate
+##' @param n number of variates.
+##' @param p probability of success.
+##' @param ... passed along as appropriate.
 ##'
 ##' @details
 ##' The \code{size} of each trial is always 1.
@@ -132,12 +132,12 @@ rbinomial <- function(n,p,...) rbinom(n,1,p)
 ##' @export
 rbern <- rbinomial
 
-##' Simulate from multivariate normal distribution.
+##' Simulate from multivariate normal distribution
 ##'
-##' @param n number of variates
+##' @param n number of variates.
 ##' @param mu vector of means
 ##' @param Sigma variance-covariance matrix with number of columns equal to
-##' length of \code{mu}
+##' length of \code{mu}.
 ##'
 ##' @details \code{rlmvnorm} is a multivariate log normal.
 ##'
@@ -238,8 +238,8 @@ parse_form_3 <- function(x,envir) {
 
 ##' Apply formulae to a data frame
 ##'
-##' @param data a data frame
-##' @param ... formulae and other arguments for \code{\link{mutate_random}}
+##' @param data a data frame.
+##' @param ... formulae and other arguments for \code{\link{mutate_random}}.
 ##'
 ##' @examples
 ##'
@@ -403,6 +403,3 @@ mvrnorm_bound <- function(call,n,envir=list(),mult=1.3,
   }
   return(out)
 }
-
-
-

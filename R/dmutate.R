@@ -243,7 +243,7 @@ parse_form_3 <- function(x,envir) {
 ##'
 ##' @examples
 ##'
-##' idata <- dplyr::data_frame(ID = 1:10)
+##' idata <- data.frame(ID = 1:10)
 ##'
 ##' dmutate(idata, y ~ rbinomial(0.5), wt ~ rnorm(mu,sd),
 ##'         envir = list(mu = 50, sd = 20))
@@ -300,7 +300,7 @@ do_mutate <- function(data,x,envir=parent.frame(),tries=10,mult=1.5,...) {
   if(x$dist %in% c("rmvnorm", "rlmvnorm", "rmassnorm", "rlmassnorm")) {
     r <- mvrnorm_bound(x$call,n=n,mn=mn,mx=mx,tries=tries,envir=envir)
   } else {
-    r <- data_frame(.x=bound(x$call,n=n,mn=mn, mx=mx,tries=tries,envir=envir))
+    r <- tibble(.x=bound(x$call,n=n,mn=mn, mx=mx,tries=tries,envir=envir))
   }
   names(r) <- x$vars
   data <- data[,setdiff(names(data),names(r)),drop=FALSE]

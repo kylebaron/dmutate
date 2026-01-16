@@ -1,5 +1,6 @@
 
-##' @importFrom dplyr left_join bind_cols data_frame ungroup
+##' @importFrom dplyr left_join bind_cols ungroup
+##' @importFrom tibble tibble
 ##' @importFrom stats rbinom rnorm setNames
 ##' @importFrom MASS mvrnorm
 ##' @importFrom rlang `:=`
